@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         validate: {isIn: [['student', 'professor']]},
       },
-      active: {type: DataTypes.BOOLEAN}
+      active: {type: DataTypes.BOOLEAN},
     }, {
       timestamps: false,
       underscored: true,

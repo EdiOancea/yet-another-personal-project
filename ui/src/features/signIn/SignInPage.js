@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     marginTop: theme.spacing(1),
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   loader: {margin: theme.spacing(3, 'auto', 2)},
   submit: {margin: theme.spacing(3, 0, 2)},

@@ -20,9 +20,9 @@ export default ({db: {User, Quiz, UserQuiz, sequelize, Sequelize}}) => ({
         {
           where: {
             quizId,
-            userId: {[Sequelize.Op.notIn]: [...studentIds, professorId]}
+            userId: {[Sequelize.Op.notIn]: [...studentIds, professorId]},
           },
-          include: [{model: User, where: {type: 'student'}}]
+          include: [{model: User, where: {type: 'student'}}],
         },
         {transaction}
       );
@@ -66,7 +66,7 @@ export default ({db: {User, Quiz, UserQuiz, sequelize, Sequelize}}) => ({
         model: UserQuiz,
         where: {quizId},
         required: false,
-      }
-    ]
-  })
+      },
+    ],
+  }),
 });

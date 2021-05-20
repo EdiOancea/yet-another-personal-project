@@ -109,7 +109,7 @@
         "array-element-newline": [2, "consistent"],
         "block-spacing": [2, "always"],
         "brace-style": 2,
-        "comma-dangle": [2, "only-multiline"],
+        "comma-dangle": [2, "always-multiline"],
         "comma-spacing": [2, {"before": false, "after": true}],
         "comma-style": [2, "last"],
         "computed-property-spacing": [2, "never"],

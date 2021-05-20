@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
   drawerContainer: {overflow: 'auto'},
   content: {flexGrow: 1, padding: theme.spacing(3)},
   link: {textDecoration: 'none', color: 'inherit'},
-  children: {padding: theme.spacing(3), height: '100%'}
+  children: {padding: theme.spacing(3), height: 'fit-content', minHeight: '500px'},
 }));
 
 const DrawerWrapper = ({children}) => {

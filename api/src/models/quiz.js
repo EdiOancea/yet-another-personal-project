@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         validate: {len: [6, 1024]},
       },
       startDate: DataTypes.DATE,
-      endDate: DataTypes.DATE
+      endDate: DataTypes.DATE,
     },
     {timestamps: false, underscored: true}
   );

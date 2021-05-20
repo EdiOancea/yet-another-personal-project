@@ -16,7 +16,7 @@ export default ({QuizRepository, UserRepository}) => ({
       .map(student => student.dataValues)
       .map(({UserQuizzes, ...student}) => ({
         ...student,
-        assigned: !!UserQuizzes.length
+        assigned: !!UserQuizzes.length,
       }));
   },
 });

@@ -8,7 +8,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 }));
 
 const FullPageLoader = ({size = 200}) => {
