@@ -1,0 +1,22 @@
+{
+  "name": "disertation",
+  "version": "1.0.0",
+  "description": "Graduation Thesis",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker:build": "docker-compose -p disertation build",
+    "docker:down": "docker-compose -p disertation down",
+    "docker:up": "docker-compose -p disertation up"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EdiOancea/yet-another-personal-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EdiOancea/yet-another-personal-project/issues"
+  },
+  "homepage": "https://github.com/EdiOancea/yet-another-personal-project#readme"
+}

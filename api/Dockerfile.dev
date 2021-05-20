@@ -1,0 +1,8 @@
+FROM node:14.16.0-alpine
+RUN mkdir -p /app/src
+WORKDIR /app
+COPY package.json /app/package.json
+COPY package-lock.json /app/package-lock.json
+COPY .env /app/.env
+RUN npm install
+CMD ["npm", "start"]
