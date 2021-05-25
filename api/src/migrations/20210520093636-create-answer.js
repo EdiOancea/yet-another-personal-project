@@ -16,6 +16,7 @@ module.exports = {
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
         },
+        statement: {type: Sequelize.STRING},
         isCorrect: {
           type: Sequelize.BOOLEAN,
           field: 'is_correct',

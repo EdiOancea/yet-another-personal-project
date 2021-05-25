@@ -2,6 +2,7 @@ export default ({
   AuthController,
   UserController,
   QuizController,
+  QuestionController,
 }) => ({
   unAuthenticated: [
     {route: '/api/signin', method: 'post', callback: AuthController.signIn},
@@ -18,5 +19,7 @@ export default ({
     {route: '/api/quiz/:quizId', method: 'delete', callback: QuizController.delete},
     {route: '/api/quiz/:quizId/assign', method: 'post', callback: QuizController.assign},
     {route: '/api/quiz/:quizId/assign-map', method: 'get', callback: QuizController.getAssignationMap},
+    {route: '/api/quiz/:quizId/question', method: 'post', callback: QuestionController.create},
+    {route: '/api/quiz/:quizId/question/:questionId', method: 'get', callback: QuestionController.get},
   ],
 });

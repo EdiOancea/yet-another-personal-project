@@ -13,6 +13,7 @@ import SignUpPage from 'features/signUp/SignUpPage';
 import Dashboard from 'features/dashboard/DashboardPage';
 import Quizzes from 'features/quizzes/QuizzesPage';
 import Quiz from 'features/quizzes/QuizPage';
+import QuizQuestion from 'features/quizzes/QuizQuestionPage';
 import AssignQuiz from 'features/quizzes/AssignQuizPage';
 
 const App = () => {
@@ -37,6 +38,9 @@ const App = () => {
       <Switch>
         <ProtectedRoute path="/dashboard" types={['professor', 'student']}>
           <Dashboard />
+        </ProtectedRoute>
+        <ProtectedRoute path="/quiz/:quizId/question/:questionId?" types={['professor']}>
+          <QuizQuestion />
         </ProtectedRoute>
         <ProtectedRoute path="/quiz/:quizId/assign" types={['professor']}>
           <AssignQuiz />

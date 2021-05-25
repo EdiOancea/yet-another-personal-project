@@ -11,7 +11,7 @@ import {useTableSelection} from 'components/CrudTable/helpers';
 const AssignQuizPage = () => {
   const {quizId} = useParams();
   const quizQuery = useQuery(
-    ['quizzes', quizId],
+    ['quiz', quizId],
     () => api.get(`/quiz/${quizId}`)
   );
   const quizAssignationMapQuery = useQuery(

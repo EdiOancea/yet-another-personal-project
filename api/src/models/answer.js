@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
+      statement: {type: DataTypes.STRING},
       isCorrect: {type: DataTypes.BOOLEAN},
     },
     {timestamps: false, underscored: true}

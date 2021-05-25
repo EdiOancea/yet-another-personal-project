@@ -9,6 +9,7 @@ import api from 'utils/api';
 import {FullPageLoader, PageTitle} from 'components';
 import {TextField, DateTimeField} from 'utils/form';
 import DrawerWrapper from 'features/drawer/Drawer';
+import QuizQuestions from './QuizQuestions';
 
 const initialValues = {
   description: '',
@@ -18,15 +19,21 @@ const initialValues = {
 
 const validationSchema = yup.object().shape({
   description: yup.string().required('Required'),
-  startDate: yup.date().required('Required').nullable(),
-  endDate: yup.date().required('Required').nullable(),
+  startDate: yup.date().required('Required'),
+  endDate: yup
+    .date()
+    .required('Required')
+    .min(
+      yup.ref('startDate'),
+      'End date must be before start date'
+    ),
 });
 
 const QuizPage = () => {
   const history = useHistory();
   const {quizId} = useParams();
   const quizQuery = useQuery(
-    ['quizzes', quizId],
+    ['quiz', quizId],
     () => api.get(`/quiz/${quizId}`),
     {enabled: !!quizId},
   );
@@ -36,6 +43,8 @@ const QuizPage = () => {
     ? updateQuizMutation.mutate
     : quiz => createQuizMutation.mutate({quiz, onSuccess: ({id}) => history.push(`/quiz/${id}`)});
 
+  const goToQuestion = () => history.push(`${history.location.pathname}/question`);
+  const goToAssign = () => history.push(`${history.location.pathname}/assign`);
   return (
     <DrawerWrapper>
       {quizQuery.isLoading
@@ -52,22 +61,29 @@ const QuizPage = () => {
                 <TextField name="description" label="Description" />
                 <DateTimeField name="startDate" label="Start Date" />
                 <DateTimeField name="endDate" label="End Date" />
-                {createQuizMutation.isLoading || updateQuizMutation.isLoading
-                  ? <CircularProgress size={24} />
-                  : <Button type="submit" color="primary">{quizId ? 'Save' : 'Create'}</Button>}
+                {!quizId && (
+                  createQuizMutation.isLoading
+                    ? <CircularProgress size={24} />
+                    : <Button type="submit" color="primary">Create</Button>
+                )}
                 {quizId && (
-                  <Button
-                    type="secondary"
-                    onClick={() => history.push(`${history.location.pathname}/assign`)}
-                  >
-                    Assign quiz
-                  </Button>
+                  <Fragment>
+                    <QuizQuestions questions={quizQuery.data.questions} />
+                    {updateQuizMutation.isLoading
+                      ? <CircularProgress size={24} />
+                      : <Button type="submit" color="primary">Save</Button>}
+                    <Button type="secondary" onClick={goToQuestion}>
+                      Add question
+                    </Button>
+                    <Button type="secondary" onClick={goToAssign}>
+                      Assign
+                    </Button>
+                  </Fragment>
                 )}
               </Form>
             </Formik>
           </Fragment>
         )}
-
     </DrawerWrapper>
   );
 };

@@ -1,4 +1,14 @@
-export default ({db: {User, Quiz, UserQuiz, sequelize, Sequelize}}) => ({
+export default ({
+  db: {
+    User,
+    Quiz,
+    Question,
+    Answer,
+    UserQuiz,
+    sequelize,
+    Sequelize,
+  },
+}) => ({
   create: async ({userId, ...rest}) => {
     const {dataValues} = await sequelize.transaction(
       async transaction => {
@@ -50,6 +60,16 @@ export default ({db: {User, Quiz, UserQuiz, sequelize, Sequelize}}) => ({
         where: {userId, quizId},
         attributes: [],
       },
+      {
+        model: Question,
+        as: 'questions',
+        include: [
+          {
+            model: Answer,
+            as: 'answers',
+          },
+        ],
+      },
     ],
   }),
   update: body => {
@@ -58,7 +78,6 @@ export default ({db: {User, Quiz, UserQuiz, sequelize, Sequelize}}) => ({
     return Quiz.update(body, {where: {id}});
   },
   delete: id => Quiz.destroy({where: {id}}),
-
   getStudentsAssignedToQuiz: quizId => User.findAll({
     where: {type: 'student'},
     include: [

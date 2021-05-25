@@ -1,5 +1,5 @@
 import React from 'react';
-import {Field} from 'formik';
+import {useField} from 'formik';
 import {TextField as MUITextField} from '@material-ui/core';
 
 const TextField = ({
@@ -9,23 +9,23 @@ const TextField = ({
   margin = 'normal',
   fullWidth = true,
   ...rest
-}) => (
-  <Field name={name}>
-    {({field, meta: {error = ' ', touched}}) => (
-      <MUITextField
-        {...{
-          ...field,
-          ...rest,
-          variant,
-          margin,
-          fullWidth,
-          autoComplete,
-          error: touched && error !== ' ',
-          helperText: error,
-        }}
-      />
-    )}
-  </Field>
-);
+}) => {
+  const [field, {error = ' ', touched}] = useField({name});
+
+  return (
+    <MUITextField
+      {...{
+        ...field,
+        ...rest,
+        variant,
+        margin,
+        fullWidth,
+        autoComplete,
+        error: touched && error !== ' ',
+        helperText: error,
+      }}
+    />
+  );
+};
 
 export default TextField;

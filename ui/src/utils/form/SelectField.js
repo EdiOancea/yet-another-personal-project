@@ -1,6 +1,12 @@
-import React, {Fragment} from 'react';
-import {Field} from 'formik';
-import {Select as MUISelectField, MenuItem, InputLabel, FormHelperText} from '@material-ui/core';
+import React from 'react';
+import {useField} from 'formik';
+import {
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormHelperText,
+} from '@material-ui/core';
 
 const SelectField = ({
   name,
@@ -9,30 +15,30 @@ const SelectField = ({
   variant = 'outlined',
   fullWidth = true,
   ...rest
-}) => (
-  <Field name={name}>
-    {({field, meta: {error = ' '}}) => (
-      <Fragment>
-        <InputLabel id={name}>{label}</InputLabel>
-        <MUISelectField
-          {...{
-            ...field,
-            ...rest,
-            variant,
-            fullWidth,
-            id: name,
-          }}
-        >
-          {options.map(({value, label: optionbLabel}) => (
-            <MenuItem key={value} value={value}>
-              {optionbLabel}
-            </MenuItem>
-          ))}
-        </MUISelectField>
-        <FormHelperText id={name} error={error !== ' '}>{error}</FormHelperText>
-      </Fragment>
-    )}
-  </Field>
-);
+}) => {
+  const [field, {error = ' '}] = useField({name});
+
+  return (
+    <FormControl variant={variant} fullWidth={fullWidth}>
+      <InputLabel id={name}>{label}</InputLabel>
+      <Select
+        {...{
+          ...field,
+          ...rest,
+          label,
+          id: name,
+          labelId: name,
+        }}
+      >
+        {options.map(({value, label: optionLabel}) => (
+          <MenuItem key={value} value={value}>
+            {optionLabel}
+          </MenuItem>
+        ))}
+      </Select>
+      <FormHelperText id={name} error={error !== ' '}>{error}</FormHelperText>
+    </FormControl>
+  );
+};
 
 export default SelectField;

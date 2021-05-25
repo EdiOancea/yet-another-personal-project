@@ -1,43 +1,38 @@
-import React, {Fragment} from 'react';
-import {Field} from 'formik';
+import React from 'react';
+import {useField} from 'formik';
 import {DateTimePicker} from '@material-ui/pickers';
-import {FormHelperText} from '@material-ui/core';
 
 const DateTimePickerField = ({
   variant = 'inline',
   inputVariant = 'outlined',
   margin = 'normal',
   fullWidth = true,
-  id,
+  autoOk = true,
+  format = 'dd/MM/yyyy hh:mm',
+  defaultValue,
   label,
   name,
-  autoOk = true,
-  defaultValue,
-  format = 'dd/MM/yyyy hh:mm',
-}) => (
-  <Field name={name} defaultValue={defaultValue}>
-    {({field, meta: {touched, error}, form: {setFieldValue}}) => (
-      <Fragment>
-        <DateTimePicker
-          {...{
-            variant,
-            inputVariant,
-            margin,
-            fullWidth,
-            id,
-            label,
-            autoOk,
-            format,
-            emptyLabel: label,
-            ...field,
-            onChange: value => setFieldValue(name, value),
-          }}
-        />
-        <FormHelperText id={name} error={touched && error !== ' '}>{error}</FormHelperText>
-      </Fragment>
+}) => {
+  const [field, {touched, error}, {setValue}] = useField({name, defaultValue});
 
-    )}
-  </Field>
-);
+  return (
+    <DateTimePicker
+      {...{
+        ...field,
+        variant,
+        inputVariant,
+        margin,
+        fullWidth,
+        label,
+        autoOk,
+        format,
+        emptyLabel: label,
+        error: touched && error !== ' ',
+        helperText: error,
+        onChange: setValue,
+      }}
+    />
+  );
+};
 
 export default DateTimePickerField;

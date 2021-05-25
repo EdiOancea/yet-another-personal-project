@@ -9,14 +9,17 @@ import routes from '../routes';
 import AuthController from '../controllers/auth';
 import UserController from '../controllers/user';
 import QuizController from '../controllers/quiz';
+import QuestionController from '../controllers/question';
 
 import AuthService from '../services/auth';
 import ErrorService from '../services/error';
 import UserService from '../services/user';
 import QuizService from '../services/quiz';
+import QuestionService from '../services/question';
 
 import UserRepository from '../repositories/user';
 import QuizRepository from '../repositories/quiz';
+import QuestionRepository from '../repositories/question';
 
 import AuthMiddleware from '../middlewares/auth';
 
@@ -31,14 +34,17 @@ bottle.factory('app', app);
 bottle.factory('AuthController', AuthController);
 bottle.factory('UserController', UserController);
 bottle.factory('QuizController', QuizController);
+bottle.factory('QuestionController', QuestionController);
 
 bottle.factory('AuthService', AuthService);
 bottle.factory('ErrorService', ErrorService);
 bottle.factory('UserService', UserService);
 bottle.factory('QuizService', QuizService);
+bottle.factory('QuestionService', QuestionService);
 
 bottle.factory('UserRepository', UserRepository);
 bottle.factory('QuizRepository', QuizRepository);
+bottle.factory('QuestionRepository', QuestionRepository);
 
 bottle.factory('AuthMiddleware', AuthMiddleware);
 
