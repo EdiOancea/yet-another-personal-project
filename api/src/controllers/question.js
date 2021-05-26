@@ -12,4 +12,18 @@ export default ({QuestionService}) => ({
 
     res.json(await QuestionService.get({quizId, questionId}));
   },
+  update: async (req, res) => {
+    const {
+      body: {statement, type, answers},
+      params: {quizId, questionId},
+    } = req;
+
+    res.json(await QuestionService.update({
+      id: questionId,
+      quizId,
+      statement,
+      type,
+      answers,
+    }));
+  },
 });

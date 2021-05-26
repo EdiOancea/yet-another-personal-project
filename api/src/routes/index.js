@@ -21,5 +21,6 @@ export default ({
     {route: '/api/quiz/:quizId/assign-map', method: 'get', callback: QuizController.getAssignationMap},
     {route: '/api/quiz/:quizId/question', method: 'post', callback: QuestionController.create},
     {route: '/api/quiz/:quizId/question/:questionId', method: 'get', callback: QuestionController.get},
+    {route: '/api/quiz/:quizId/question/:questionId', method: 'put', callback: QuestionController.update},
   ],
 });

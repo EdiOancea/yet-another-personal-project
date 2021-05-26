@@ -63,12 +63,7 @@ export default ({
       {
         model: Question,
         as: 'questions',
-        include: [
-          {
-            model: Answer,
-            as: 'answers',
-          },
-        ],
+        include: [{model: Answer, as: 'answers'}],
       },
     ],
   }),

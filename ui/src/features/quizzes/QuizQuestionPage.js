@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
-import {useParams} from 'react-router';
+import {useParams, useHistory} from 'react-router';
 import {useMutation, useQuery} from 'react-query';
-import {Button} from '@material-ui/core';
+import {Button, CircularProgress} from '@material-ui/core';
 import {Formik, Form} from 'formik';
 import * as yup from 'yup';
 
@@ -22,13 +22,20 @@ const validationSchema = yup.object().shape({});
 
 const QuizQuestionPage = () => {
   const {quizId, questionId} = useParams();
+  const history = useHistory();
   const questionQuery = useQuery(
     ['quiz', quizId, 'question', questionId],
     () => api.get(`/quiz/${quizId}/question/${questionId}`),
     {enabled: !!questionId},
   );
-  const createQuestionMutation = useMutation(question => api.post(`/quiz/${quizId}/question`, question));
-  const updateQuestionMutation = useMutation(question => api.put(`/quiz/${quizId}/question/${questionId}`, question));
+  const createQuestionMutation = useMutation(
+    question => api.post(`/quiz/${quizId}/question`, question),
+    {onSuccess: history.goBack}
+  );
+  const updateQuestionMutation = useMutation(
+    question => api.put(`/quiz/${quizId}/question/${questionId}`, question),
+    {onSuccess: history.goBack}
+  );
   const onSubmit = questionId
     ? updateQuestionMutation.mutate
     : createQuestionMutation.mutate;
@@ -57,7 +64,17 @@ const QuizQuestionPage = () => {
                   ]}
                 />
                 <QuizQuestionAnswersTable name="answers" />
-                <Button variant="primary" type="submit">Submit</Button>
+                {questionId && (
+                  updateQuestionMutation.isLoading
+                    ? <CircularProgress size={24} />
+                    : <Button color="primary" type="submit">Save</Button>
+                )}
+                {questionId && <Button variant="secondary" onClick={history.goBack}>Cancel</Button>}
+                {!questionId && (
+                  createQuestionMutation.isLoading
+                    ? <CircularProgress size={24} />
+                    : <Button color="primary" type="submit">Add</Button>
+                )}
               </Form>
             </Formik>
           </Fragment>

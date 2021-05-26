@@ -13,7 +13,7 @@ const DateTimePickerField = ({
   label,
   name,
 }) => {
-  const [field, {touched, error}, {setValue}] = useField({name, defaultValue});
+  const [field, {touched, error = ' '}, {setValue}] = useField({name, defaultValue});
 
   return (
     <DateTimePicker

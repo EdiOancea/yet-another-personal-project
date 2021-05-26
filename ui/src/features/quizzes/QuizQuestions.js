@@ -9,7 +9,7 @@ import {
   Checkbox,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import {Edit as EditIcon} from '@material-ui/icons';
+import {Edit as EditIcon, Add as AddIcon} from '@material-ui/icons';
 
 const useStyles = makeStyles(() => ({
   questions: {flexDirection: 'column'},
@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
 const QuizQuestions = ({questions}) => {
   const classes = useStyles();
   const history = useHistory();
-  const goToQuestion = (e, id) => {
+  const goToQuestion = (e, id = '') => {
     e.stopPropagation();
 
     history.push(`${history.location.pathname}/question/${id}`);
@@ -27,8 +27,9 @@ const QuizQuestions = ({questions}) => {
 
   return (
     <Accordion>
-      <AccordionSummary>
+      <AccordionSummary classes={{content: classes.header}}>
         See Questions
+        <AddIcon onClick={goToQuestion} />
       </AccordionSummary>
       <AccordionDetails classes={{root: classes.questions}}>
         {questions.map(({id, type, statement, answers}) => (
@@ -51,6 +52,7 @@ const QuizQuestions = ({questions}) => {
             </AccordionDetails>
           </Accordion>
         ))}
+        {questions.length === 0 && 'This quiz has no questions.'}
       </AccordionDetails>
     </Accordion>
   );

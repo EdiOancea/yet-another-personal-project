@@ -1,6 +1,6 @@
 import React, {Fragment, useMemo} from 'react';
 import {useQuery, useMutation} from 'react-query';
-import {useParams} from 'react-router';
+import {useParams, useHistory} from 'react-router';
 import {Button, CircularProgress} from '@material-ui/core';
 
 import api from 'utils/api';
@@ -9,6 +9,7 @@ import {CrudTable, FullPageLoader, PageTitle} from 'components';
 import {useTableSelection} from 'components/CrudTable/helpers';
 
 const AssignQuizPage = () => {
+  const history = useHistory();
   const {quizId} = useParams();
   const quizQuery = useQuery(
     ['quiz', quizId],
@@ -24,10 +25,8 @@ const AssignQuizPage = () => {
   );
   const selectionProps = useTableSelection(quizAssignationMapQuery.data, preselectedStudents);
   const assignStudentsMutation = useMutation(
-    () => api.post(
-      `/quiz/${quizId}/assign`,
-      {studentIds: selectionProps.selected}
-    )
+    () => api.post(`/quiz/${quizId}/assign`, {studentIds: selectionProps.selected}),
+    {onSuccess: history.goBack}
   );
 
   return (

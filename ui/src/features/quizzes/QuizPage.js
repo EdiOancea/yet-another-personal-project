@@ -13,8 +13,8 @@ import QuizQuestions from './QuizQuestions';
 
 const initialValues = {
   description: '',
-  startDate: null,
-  endDate: null,
+  startDate: new Date(),
+  endDate: new Date(),
 };
 
 const validationSchema = yup.object().shape({
@@ -37,14 +37,17 @@ const QuizPage = () => {
     () => api.get(`/quiz/${quizId}`),
     {enabled: !!quizId},
   );
-  const updateQuizMutation = useMutation(quiz => api.put(`/quiz/${quizId}`, quiz));
-  const createQuizMutation = useMutation(({quiz, onSuccess}) => api.post('/quiz', quiz).then(onSuccess));
-  const onSubmit = quizId
-    ? updateQuizMutation.mutate
-    : quiz => createQuizMutation.mutate({quiz, onSuccess: ({id}) => history.push(`/quiz/${id}`)});
-
-  const goToQuestion = () => history.push(`${history.location.pathname}/question`);
+  const updateQuizMutation = useMutation(
+    quiz => api.put(`/quiz/${quizId}`, quiz),
+    {onSuccess: history.goBack}
+  );
+  const createQuizMutation = useMutation(
+    quiz => api.post('/quiz', quiz),
+    {onSuccess: ({id}) => history.push(`/quiz/${id}`)}
+  );
+  const onSubmit = quizId ? updateQuizMutation.mutate : createQuizMutation.mutate;
   const goToAssign = () => history.push(`${history.location.pathname}/assign`);
+
   return (
     <DrawerWrapper>
       {quizQuery.isLoading
@@ -72,9 +75,6 @@ const QuizPage = () => {
                     {updateQuizMutation.isLoading
                       ? <CircularProgress size={24} />
                       : <Button type="submit" color="primary">Save</Button>}
-                    <Button type="secondary" onClick={goToQuestion}>
-                      Add question
-                    </Button>
                     <Button type="secondary" onClick={goToAssign}>
                       Assign
                     </Button>
