@@ -14,9 +14,9 @@ export default ({QuizRepository, UserRepository}) => ({
 
     return allStudents
       .map(student => student.dataValues)
-      .map(({UserQuizzes, ...student}) => ({
+      .map(({QuizAssociations, ...student}) => ({
         ...student,
-        assigned: !!UserQuizzes.length,
+        assigned: !!QuizAssociations.length,
       }));
   },
 });

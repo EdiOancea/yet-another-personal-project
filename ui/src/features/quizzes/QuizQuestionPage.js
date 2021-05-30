@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {useParams, useHistory} from 'react-router';
 import {useMutation, useQuery} from 'react-query';
 import {Button, CircularProgress} from '@material-ui/core';
@@ -6,7 +6,7 @@ import {Formik, Form} from 'formik';
 import * as yup from 'yup';
 
 import api from 'utils/api';
-import {FullPageLoader, PageTitle} from 'components';
+import {PageTitle} from 'components';
 import {TextField, SelectField} from 'utils/form';
 import DrawerWrapper from 'features/drawer/Drawer';
 
@@ -15,10 +15,17 @@ import QuizQuestionAnswersTable from './QuizQuestionAnswersTable';
 const initialValues = {
   statement: '',
   type: 'essay',
+  availablePoints: 0,
   answers: [{isCorrect: false, statement: ''}],
 };
 
-const validationSchema = yup.object().shape({});
+const validationSchema = yup.object().shape({
+  statement: yup.string().required('Required'),
+  availablePoints: yup
+    .number()
+    .required('Required')
+    .min(0, 'Available points can\'t be below 0'),
+});
 
 const QuizQuestionPage = () => {
   const {quizId, questionId} = useParams();
@@ -41,44 +48,39 @@ const QuizQuestionPage = () => {
     : createQuestionMutation.mutate;
 
   return (
-    <DrawerWrapper>
-      {questionQuery.isLoading
-        ? <FullPageLoader />
-        : (
-          <Fragment>
-            <PageTitle title={questionId ? 'Update Question' : 'Add Question'} />
-            <Formik
-              initialValues={questionId ? questionQuery.data : initialValues}
-              validationSchema={validationSchema}
-              onSubmit={onSubmit}
-            >
-              <Form>
-                <TextField name="statement" label="Question Statement" />
-                <SelectField
-                  name="type"
-                  label="Question Type"
-                  options={[
-                    {label: 'Essay', value: 'essay'},
-                    {label: 'Single option', value: 'singleOption'},
-                    {label: 'Multiple options', value: 'multipleOptions'},
-                  ]}
-                />
-                <QuizQuestionAnswersTable name="answers" />
-                {questionId && (
-                  updateQuestionMutation.isLoading
-                    ? <CircularProgress size={24} />
-                    : <Button color="primary" type="submit">Save</Button>
-                )}
-                {questionId && <Button variant="secondary" onClick={history.goBack}>Cancel</Button>}
-                {!questionId && (
-                  createQuestionMutation.isLoading
-                    ? <CircularProgress size={24} />
-                    : <Button color="primary" type="submit">Add</Button>
-                )}
-              </Form>
-            </Formik>
-          </Fragment>
-        )}
+    <DrawerWrapper isLoading={questionQuery.isLoading}>
+      <PageTitle title={questionId ? 'Update Question' : 'Add Question'} />
+      <Formik
+        initialValues={questionId ? questionQuery.data : initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        <Form>
+          <TextField name="statement" label="Question Statement" />
+          <TextField type="number" name="availablePoints" label="Available Points" />
+          <SelectField
+            name="type"
+            label="Question Type"
+            options={[
+              {label: 'Essay', value: 'essay'},
+              {label: 'Single option', value: 'singleOption'},
+              {label: 'Multiple options', value: 'multipleOptions'},
+            ]}
+          />
+          <QuizQuestionAnswersTable name="answers" />
+          {questionId && (
+            updateQuestionMutation.isLoading
+              ? <CircularProgress size={24} />
+              : <Button color="primary" type="submit">Save</Button>
+          )}
+          {questionId && <Button variant="secondary" onClick={history.goBack}>Cancel</Button>}
+          {!questionId && (
+            createQuestionMutation.isLoading
+              ? <CircularProgress size={24} />
+              : <Button color="primary" type="submit">Add</Button>
+          )}
+        </Form>
+      </Formik>
     </DrawerWrapper>
   );
 };

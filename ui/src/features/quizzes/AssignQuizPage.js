@@ -1,11 +1,11 @@
-import React, {Fragment, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {useQuery, useMutation} from 'react-query';
 import {useParams, useHistory} from 'react-router';
 import {Button, CircularProgress} from '@material-ui/core';
 
 import api from 'utils/api';
 import DrawerWrapper from 'features/drawer/Drawer';
-import {CrudTable, FullPageLoader, PageTitle} from 'components';
+import {CrudTable, PageTitle} from 'components';
 import {useTableSelection} from 'components/CrudTable/helpers';
 
 const AssignQuizPage = () => {
@@ -30,24 +30,18 @@ const AssignQuizPage = () => {
   );
 
   return (
-    <DrawerWrapper>
-      {quizAssignationMapQuery.isLoading || quizQuery.isLoading
-        ? <FullPageLoader />
-        : (
-          <Fragment>
-            <PageTitle title={quizQuery.data.description} />
-            <CrudTable
-              title="Assign students to this quiz"
-              headers={['First Name', 'Last Name']}
-              rowKeys={['firstName', 'lastName']}
-              entities={quizAssignationMapQuery.data}
-              selectionProps={selectionProps}
-            />
-            {assignStudentsMutation.isLoading
-              ? <CircularProgress />
-              : <Button onClick={assignStudentsMutation.mutate}>Assign</Button>}
-          </Fragment>
-        )}
+    <DrawerWrapper isLoading={quizAssignationMapQuery.isLoading || quizQuery.isLoading}>
+      <PageTitle title={quizQuery.data?.description} />
+      <CrudTable
+        title="Assign students to this quiz"
+        headers={['First Name', 'Last Name']}
+        rowKeys={['firstName', 'lastName']}
+        entities={quizAssignationMapQuery.data}
+        selectionProps={selectionProps}
+      />
+      {assignStudentsMutation.isLoading
+        ? <CircularProgress />
+        : <Button onClick={assignStudentsMutation.mutate}>Assign</Button>}
     </DrawerWrapper>
   );
 };

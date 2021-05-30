@@ -19,9 +19,11 @@ const authSlice = createSlice({
       state.token = token;
     },
     setLoggedUser(state, {payload: user}) {
+      localStorage.setItem('userType', user.type);
       state.user = user;
     },
     logOut(state) {
+      localStorage.clear();
       state.token = initialState.token;
       state.user = initialState.user;
     },

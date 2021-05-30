@@ -40,9 +40,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  User.associate = ({UserQuiz, Quiz}) => {
-    User.hasMany(UserQuiz, {foreignKey: 'userId'});
-    User.belongsToMany(Quiz, {through: UserQuiz});
+  User.associate = ({QuizAssociation, Quiz}) => {
+    User.hasMany(QuizAssociation, {foreignKey: 'userId'});
+    User.belongsToMany(Quiz, {through: QuizAssociation});
   };
 
   User.beforeCreate(user => {

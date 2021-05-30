@@ -4,7 +4,7 @@ export default ({
     Quiz,
     Question,
     Answer,
-    UserQuiz,
+    QuizAssociation,
     sequelize,
     Sequelize,
   },
@@ -13,7 +13,7 @@ export default ({
     const {dataValues} = await sequelize.transaction(
       async transaction => {
         const quiz = await Quiz.create(rest, {transaction});
-        await UserQuiz.create(
+        await QuizAssociation.create(
           {quizId: quiz.id, userId},
           {transaction}
         );
@@ -26,7 +26,7 @@ export default ({
   },
   assign: ({studentIds, quizId, professorId}) => sequelize.transaction(
     async transaction => {
-      await UserQuiz.destroy(
+      await QuizAssociation.destroy(
         {
           where: {
             quizId,
@@ -36,16 +36,16 @@ export default ({
         },
         {transaction}
       );
-      await UserQuiz.bulkCreate(
+      await QuizAssociation.bulkCreate(
         studentIds.map(userId => ({quizId, userId})),
-        {updateOnDuplicate: ['userId'], transaction}
+        {ignoreDuplicates: true, transaction}
       );
     }
   ),
   get: (userId, {page, pageSize}) => Quiz.findAndCountAll({
     include: [
       {
-        model: UserQuiz,
+        model: QuizAssociation,
         where: {userId},
         attributes: [],
       },
@@ -56,7 +56,7 @@ export default ({
   getOne: (userId, quizId) => Quiz.findOne({
     include: [
       {
-        model: UserQuiz,
+        model: QuizAssociation,
         where: {userId, quizId},
         attributes: [],
       },
@@ -77,7 +77,7 @@ export default ({
     where: {type: 'student'},
     include: [
       {
-        model: UserQuiz,
+        model: QuizAssociation,
         where: {quizId},
         required: false,
       },

@@ -14,6 +14,7 @@ import {
   Paper,
 } from '@material-ui/core';
 
+import {FullPageLoader} from 'components';
 import {SIDEBAR_ITEMS_LIST} from './config';
 
 const useStyles = makeStyles(theme => ({
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   children: {padding: theme.spacing(3), height: 'fit-content', minHeight: '500px'},
 }));
 
-const DrawerWrapper = ({children}) => {
+const DrawerWrapper = ({children, isLoading}) => {
   const classes = useStyles();
 
   return (
@@ -60,7 +61,7 @@ const DrawerWrapper = ({children}) => {
       <main className={classes.content}>
         <Toolbar />
         <Paper elevation={2} className={classes.children}>
-          {children}
+          {isLoading ? <FullPageLoader /> : children}
         </Paper>
       </main>
     </div>

@@ -6,7 +6,7 @@ import {Formik, Form} from 'formik';
 import * as yup from 'yup';
 
 import api from 'utils/api';
-import {FullPageLoader, PageTitle} from 'components';
+import {PageTitle} from 'components';
 import {TextField, DateTimeField} from 'utils/form';
 import DrawerWrapper from 'features/drawer/Drawer';
 import QuizQuestions from './QuizQuestions';
@@ -46,44 +46,38 @@ const QuizPage = () => {
     {onSuccess: ({id}) => history.push(`/quiz/${id}`)}
   );
   const onSubmit = quizId ? updateQuizMutation.mutate : createQuizMutation.mutate;
-  const goToAssign = () => history.push(`${history.location.pathname}/assign`);
+  const goToAssign = () => history.push(`/quiz/${quizId}/assign`);
 
   return (
-    <DrawerWrapper>
-      {quizQuery.isLoading
-        ? <FullPageLoader />
-        : (
-          <Fragment>
-            <PageTitle title={quizId ? 'Update Quiz' : 'Add Quiz'} />
-            <Formik
-              initialValues={quizId ? quizQuery.data : initialValues}
-              validationSchema={validationSchema}
-              onSubmit={onSubmit}
-            >
-              <Form>
-                <TextField name="description" label="Description" />
-                <DateTimeField name="startDate" label="Start Date" />
-                <DateTimeField name="endDate" label="End Date" />
-                {!quizId && (
-                  createQuizMutation.isLoading
-                    ? <CircularProgress size={24} />
-                    : <Button type="submit" color="primary">Create</Button>
-                )}
-                {quizId && (
-                  <Fragment>
-                    <QuizQuestions questions={quizQuery.data.questions} />
-                    {updateQuizMutation.isLoading
-                      ? <CircularProgress size={24} />
-                      : <Button type="submit" color="primary">Save</Button>}
-                    <Button type="secondary" onClick={goToAssign}>
-                      Assign
-                    </Button>
-                  </Fragment>
-                )}
-              </Form>
-            </Formik>
-          </Fragment>
-        )}
+    <DrawerWrapper isLoading={quizQuery.isLoading}>
+      <PageTitle title={quizId ? 'Update Quiz' : 'Add Quiz'} />
+      <Formik
+        initialValues={quizId ? quizQuery.data : initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        <Form>
+          <TextField name="description" label="Description" />
+          <DateTimeField name="startDate" label="Start Date" />
+          <DateTimeField name="endDate" label="End Date" />
+          {!quizId && (
+            createQuizMutation.isLoading
+              ? <CircularProgress size={24} />
+              : <Button type="submit" color="primary">Create</Button>
+          )}
+          {quizId && (
+            <Fragment>
+              <QuizQuestions questions={quizQuery.data?.questions} />
+              {updateQuizMutation.isLoading
+                ? <CircularProgress size={24} />
+                : <Button type="submit" color="primary">Save</Button>}
+              <Button type="secondary" onClick={goToAssign}>
+                Assign
+              </Button>
+            </Fragment>
+          )}
+        </Form>
+      </Formik>
     </DrawerWrapper>
   );
 };

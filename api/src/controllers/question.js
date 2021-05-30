@@ -1,11 +1,19 @@
 export default ({QuestionService}) => ({
   create: async (req, res) => {
     const {
-      body: {statement, type, answers},
+      body: {statement, type, answers, availablePoints},
       params: {quizId},
     } = req;
 
-    res.json(await QuestionService.create({statement, answers, type, quizId}));
+    res.json(
+      await QuestionService.create({
+        statement,
+        answers,
+        type,
+        availablePoints,
+        quizId,
+      })
+    );
   },
   get: async (req, res) => {
     const {params: {quizId, questionId}} = req;
@@ -18,12 +26,19 @@ export default ({QuestionService}) => ({
       params: {quizId, questionId},
     } = req;
 
-    res.json(await QuestionService.update({
-      id: questionId,
-      quizId,
-      statement,
-      type,
-      answers,
-    }));
+    res.json(
+      await QuestionService.update({
+        id: questionId,
+        quizId,
+        statement,
+        type,
+        answers,
+      })
+    );
+  },
+  delete: async (req, res) => {
+    const {params: {quizId, questionId}} = req;
+
+    res.json(await QuestionService.delete({id: questionId, quizId}));
   },
 });

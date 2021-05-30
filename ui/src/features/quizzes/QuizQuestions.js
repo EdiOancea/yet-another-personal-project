@@ -1,5 +1,6 @@
 import React from 'react';
-import {useHistory} from 'react-router';
+import {useMutation, useQueryClient} from 'react-query';
+import {useHistory, useParams} from 'react-router';
 import {
   Accordion,
   AccordionDetails,
@@ -7,9 +8,16 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  CircularProgress,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import {Edit as EditIcon, Add as AddIcon} from '@material-ui/icons';
+import {
+  Edit as EditIcon,
+  Add as AddIcon,
+  Delete as DeleteIcon,
+} from '@material-ui/icons';
+
+import api from 'utils/api';
 
 const useStyles = makeStyles(() => ({
   questions: {flexDirection: 'column'},
@@ -19,10 +27,21 @@ const useStyles = makeStyles(() => ({
 const QuizQuestions = ({questions}) => {
   const classes = useStyles();
   const history = useHistory();
+  const {quizId} = useParams();
+  const queryClient = useQueryClient();
+  const deleteQuestionMutation = useMutation(
+    id => api.delete(`/quiz/${quizId}/question/${id}`),
+    {onSuccess: () => queryClient.invalidateQueries(['quiz', quizId])}
+  );
   const goToQuestion = (e, id = '') => {
     e.stopPropagation();
 
-    history.push(`${history.location.pathname}/question/${id}`);
+    history.push(`/quiz/${quizId}/question/${id}`);
+  };
+  const deleteQuestion = (e, id) => {
+    e.stopPropagation();
+
+    deleteQuestionMutation.mutate(id);
   };
 
   return (
@@ -36,7 +55,12 @@ const QuizQuestions = ({questions}) => {
           <Accordion key={id}>
             <AccordionSummary classes={{content: classes.header}}>
               {statement}
-              <EditIcon onClick={e => goToQuestion(e, id)} />
+              <span>
+                <EditIcon onClick={e => goToQuestion(e, id)} />
+                {deleteQuestionMutation.isLoading
+                  ? <CircularProgress size={24} />
+                  : <DeleteIcon onClick={e => deleteQuestion(e, id)} />}
+              </span>
             </AccordionSummary>
             <AccordionDetails>
               <FormGroup>

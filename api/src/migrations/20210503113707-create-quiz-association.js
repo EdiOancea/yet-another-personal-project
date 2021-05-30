@@ -2,12 +2,19 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable(
-      'questions',
+      'quiz_associations',
       {
         id: {
           type: Sequelize.UUID,
           defaultValue: Sequelize.UUIDV4,
           primaryKey: true,
+        },
+        userId: {
+          type: Sequelize.UUID,
+          field: 'user_id',
+          references: {model: 'users', key: 'id'},
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
         },
         quizId: {
           type: Sequelize.UUID,
@@ -16,16 +23,10 @@ module.exports = {
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
         },
-        statement: {type: Sequelize.STRING},
-        type: {type: Sequelize.STRING},
-        availablePoints: {
-          type: Sequelize.INTEGER,
-          field: 'available_points',
-        },
       }
     );
   },
   down: async queryInterface => {
-    await queryInterface.dropTable('questions');
+    await queryInterface.dropTable('quiz_associations');
   },
 };

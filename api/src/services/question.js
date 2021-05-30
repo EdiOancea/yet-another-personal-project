@@ -21,4 +21,5 @@ export default ({QuestionRepository}) => ({
       answerIdsToKeep,
     });
   },
+  delete: QuestionRepository.delete,
 });

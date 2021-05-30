@@ -44,4 +44,5 @@ export default ({
       return 'OK';
     }
   ),
+  delete: ({id, quizId}) => Question.destroy({where: {id, quizId}}),
 });

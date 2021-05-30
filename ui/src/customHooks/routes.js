@@ -9,7 +9,7 @@ export const useCorrectUserTypes = types => {
   const userType = useSelector(state => state.auth.user.type);
 
   useEffect(() => {
-    if (!types.includes(userType) && !types.includes(localStorage.getItem('userType'))) {
+    if (userType && !types.includes(userType) && !types.includes(localStorage.getItem('userType'))) {
       dispatch(logOut());
     }
   }, [dispatch, types, userType]);
