@@ -1,7 +1,7 @@
 export default ({QuestionService}) => ({
   create: async (req, res) => {
     const {
-      body: {statement, type, answers, availablePoints},
+      body: {statement, type, answers, availablePoints, version},
       params: {quizId},
     } = req;
 
@@ -11,6 +11,7 @@ export default ({QuestionService}) => ({
         answers,
         type,
         availablePoints,
+        version,
         quizId,
       })
     );
@@ -22,7 +23,7 @@ export default ({QuestionService}) => ({
   },
   update: async (req, res) => {
     const {
-      body: {statement, type, answers},
+      body: {statement, type, answers, availablePoints, version},
       params: {quizId, questionId},
     } = req;
 
@@ -32,6 +33,8 @@ export default ({QuestionService}) => ({
         quizId,
         statement,
         type,
+        availablePoints,
+        version,
         answers,
       })
     );

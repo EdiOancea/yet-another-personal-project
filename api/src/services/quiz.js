@@ -12,11 +12,9 @@ export default ({QuizRepository, UserRepository}) => ({
   getAssignationMap: async quizId => {
     const allStudents = await QuizRepository.getStudentsAssignedToQuiz(quizId);
 
-    return allStudents
-      .map(student => student.dataValues)
-      .map(({QuizAssociations, ...student}) => ({
-        ...student,
-        assigned: !!QuizAssociations.length,
-      }));
+    return allStudents.map(({assignedQuizzes, ...student}) => ({
+      ...student,
+      version: assignedQuizzes.version || 0,
+    }));
   },
 });

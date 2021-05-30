@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   User.associate = ({QuizAssociation, Quiz}) => {
-    User.hasMany(QuizAssociation, {foreignKey: 'userId'});
+    User.hasMany(QuizAssociation, {foreignKey: 'userId', as: 'assignedQuizzes'});
     User.belongsToMany(Quiz, {through: QuizAssociation});
   };
 

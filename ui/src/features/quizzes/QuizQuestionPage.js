@@ -16,6 +16,7 @@ const initialValues = {
   statement: '',
   type: 'essay',
   availablePoints: 0,
+  version: 1,
   answers: [{isCorrect: false, statement: ''}],
 };
 
@@ -23,8 +24,15 @@ const validationSchema = yup.object().shape({
   statement: yup.string().required('Required'),
   availablePoints: yup
     .number()
-    .required('Required')
-    .min(0, 'Available points can\'t be below 0'),
+    .integer('Must be an integer')
+    .min(0, 'Available points can\'t be below 0')
+    .required('Required'),
+  version: yup
+    .number()
+    .integer('Must be an integer')
+    .min(1, 'The version should be between 1 and 3')
+    .max(3, 'The version should be between 1 and 3')
+    .required('Required'),
 });
 
 const QuizQuestionPage = () => {
@@ -58,6 +66,7 @@ const QuizQuestionPage = () => {
         <Form>
           <TextField name="statement" label="Question Statement" />
           <TextField type="number" name="availablePoints" label="Available Points" />
+          <TextField type="number" name="version" label="Version" />
           <SelectField
             name="type"
             label="Question Type"

@@ -18,14 +18,13 @@ export default ({
   update: ({
     id,
     quizId,
-    statement,
-    type,
     answers,
     answerIdsToKeep,
+    ...rest
   }) => sequelize.transaction(
     async transaction => {
       await Question.update(
-        {statement, type},
+        rest,
         {
           where: {id},
           include: [{model: Quiz, where: {id: quizId}, attributes: []}],

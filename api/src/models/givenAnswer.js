@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  const QuestionAssociation = sequelize.define(
-    'QuestionAssociation',
+  const GivenAnswer = sequelize.define(
+    'GivenAnswer',
     {
       id: {
         type: DataTypes.UUID,
@@ -20,10 +20,11 @@ module.exports = (sequelize, DataTypes) => {
     {timestamps: false, underscored: true}
   );
 
-  QuestionAssociation.associate = ({Question, QuizAssociation}) => {
-    QuestionAssociation.belongsTo(Question, {foreignKey: 'question_id'});
-    QuestionAssociation.belongsTo(QuizAssociation, {foreignKey: 'quiz_association_id'});
+  GivenAnswer.associate = ({Question, Answer, QuizAssociation}) => {
+    GivenAnswer.belongsTo(Question, {foreignKey: 'question_id'});
+    GivenAnswer.belongsTo(QuizAssociation, {foreignKey: 'quiz_association_id'});
+    GivenAnswer.belongsTo(Answer, {foreignKey: 'answer_id'});
   };
 
-  return QuestionAssociation;
+  return GivenAnswer;
 };

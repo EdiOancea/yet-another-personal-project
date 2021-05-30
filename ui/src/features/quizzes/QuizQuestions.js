@@ -21,6 +21,7 @@ import api from 'utils/api';
 
 const useStyles = makeStyles(() => ({
   questions: {flexDirection: 'column'},
+  questionGroups: {flexDirection: 'column'},
   header: {justifyContent: 'space-between'},
 }));
 
@@ -50,33 +51,43 @@ const QuizQuestions = ({questions}) => {
         See Questions
         <AddIcon onClick={goToQuestion} />
       </AccordionSummary>
-      <AccordionDetails classes={{root: classes.questions}}>
-        {questions.map(({id, type, statement, answers}) => (
-          <Accordion key={id}>
-            <AccordionSummary classes={{content: classes.header}}>
-              {statement}
-              <span>
-                <EditIcon onClick={e => goToQuestion(e, id)} />
-                {deleteQuestionMutation.isLoading
-                  ? <CircularProgress size={24} />
-                  : <DeleteIcon onClick={e => deleteQuestion(e, id)} />}
-              </span>
-            </AccordionSummary>
-            <AccordionDetails>
-              <FormGroup>
-                {answers.map(({id: answerId, statement: answer, isCorrect}) => (
-                  <FormControlLabel
-                    key={answerId}
-                    control={<Checkbox checked={isCorrect} disabled />}
-                    label={answer}
-                  />
+      <AccordionDetails classes={{root: classes.questionGroups}}>
+        {[1, 2, 3].map(version => (
+          <Accordion key={version}>
+            <AccordionSummary>{`Version ${version} questions`}</AccordionSummary>
+            <AccordionDetails classes={{root: classes.questions}}>
+              {questions
+                .filter(question => question.version === version)
+                .map(({id, type, statement, answers}) => (
+                  <Accordion key={id}>
+                    <AccordionSummary classes={{content: classes.header}}>
+                      {statement}
+                      <span>
+                        <EditIcon onClick={e => goToQuestion(e, id)} />
+                        {deleteQuestionMutation.isLoading
+                          ? <CircularProgress size={24} />
+                          : <DeleteIcon onClick={e => deleteQuestion(e, id)} />}
+                      </span>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <FormGroup>
+                        {answers.map(({id: answerId, statement: answer, isCorrect}) => (
+                          <FormControlLabel
+                            key={answerId}
+                            control={<Checkbox checked={isCorrect} disabled />}
+                            label={answer}
+                          />
+                        ))}
+                        {type === 'essay' && 'This question has no options to choose from'}
+                      </FormGroup>
+                    </AccordionDetails>
+                  </Accordion>
                 ))}
-                {type === 'essay' && 'This question has no options to choose from'}
-              </FormGroup>
+              {questions.length === 0 && 'This quiz has no questions.'}
             </AccordionDetails>
           </Accordion>
         ))}
-        {questions.length === 0 && 'This quiz has no questions.'}
+
       </AccordionDetails>
     </Accordion>
   );

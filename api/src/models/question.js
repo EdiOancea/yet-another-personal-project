@@ -10,14 +10,15 @@ module.exports = (sequelize, DataTypes) => {
       statement: {type: DataTypes.STRING},
       type: {type: DataTypes.STRING},
       availablePoints: {type: DataTypes.INTEGER},
+      version: {type: DataTypes.INTEGER},
     },
     {timestamps: false, underscored: true}
   );
 
-  Question.associate = ({Quiz, Answer, QuestionAssociation}) => {
+  Question.associate = ({Quiz, Answer, GivenAnswer}) => {
     Question.belongsTo(Quiz, {foreignKey: 'quizId'});
     Question.Answers = Question.hasMany(Answer, {foreignKey: 'questionId', as: 'answers'});
-    Question.hasMany(QuestionAssociation, {foreignKey: 'question_id', as: 'questionAssociations'});
+    Question.hasMany(GivenAnswer, {foreignKey: 'question_id', as: 'givenAnswers'});
   };
 
   return Question;

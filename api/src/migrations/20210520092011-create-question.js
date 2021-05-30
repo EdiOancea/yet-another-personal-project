@@ -22,7 +22,8 @@ module.exports = {
           type: Sequelize.INTEGER,
           field: 'available_points',
         },
-      }
+        version: {type: Sequelize.INTEGER},
+      },
     );
   },
   down: async queryInterface => {

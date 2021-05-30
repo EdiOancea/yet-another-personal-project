@@ -13,8 +13,9 @@ module.exports = (sequelize, DataTypes) => {
     {timestamps: false, underscored: true}
   );
 
-  Answer.associate = ({Question}) => {
+  Answer.associate = ({Question, GivenAnswer}) => {
     Answer.belongsTo(Question, {foreignKey: 'questionId'});
+    Answer.hasMany(GivenAnswer, {foreignKey: 'answer_id', as: 'givenAnswers'});
   };
 
   return Answer;

@@ -9,14 +9,15 @@ module.exports = (sequelize, DataTypes) => {
       },
       userId: {type: DataTypes.UUID},
       quizId: {type: DataTypes.UUID},
+      version: {type: DataTypes.INTEGER},
     },
     {timestamps: false, underscored: true}
   );
 
-  QuizAssociation.associate = ({User, Quiz, QuestionAssociation}) => {
+  QuizAssociation.associate = ({User, Quiz, GivenAnswer}) => {
     QuizAssociation.belongsTo(Quiz, {foreignKey: 'quizId'});
     QuizAssociation.belongsTo(User, {foreignKey: 'userId'});
-    QuizAssociation.hasMany(QuestionAssociation, {foreignKey: 'quiz_association_id', as: 'questionAssociations'});
+    QuizAssociation.hasMany(GivenAnswer, {foreignKey: 'quiz_association_id', as: 'givenAnswers'});
   };
 
   return QuizAssociation;

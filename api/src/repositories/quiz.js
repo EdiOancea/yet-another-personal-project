@@ -14,7 +14,7 @@ export default ({
       async transaction => {
         const quiz = await Quiz.create(rest, {transaction});
         await QuizAssociation.create(
-          {quizId: quiz.id, userId},
+          {quizId: quiz.id, userId, version: -1},
           {transaction}
         );
 
@@ -37,8 +37,12 @@ export default ({
         {transaction}
       );
       await QuizAssociation.bulkCreate(
-        studentIds.map(userId => ({quizId, userId})),
-        {ignoreDuplicates: true, transaction}
+        studentIds.map(userId => ({
+          quizId,
+          userId,
+          version: Math.floor(Math.random() * 3 + 1),
+        })),
+        {updateOnDuplicate: ['quizId', 'userId'], transaction}
       );
     }
   ),
@@ -78,9 +82,12 @@ export default ({
     include: [
       {
         model: QuizAssociation,
+        as: 'assignedQuizzes',
         where: {quizId},
         required: false,
       },
     ],
+    raw: true,
+    nest: true,
   }),
 });
