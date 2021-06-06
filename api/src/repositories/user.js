@@ -1,13 +1,21 @@
-export default ({db: {User}}) => ({
-  create: async body => {
-    const {dataValues: {password, ...rest}} = await User.create({...body, active: false});
-
-    return rest;
-  },
+export default ({db: {User, QuizAssociation}}) => ({
+  create: body => User.create({...body, active: false}),
   getByEmail: email => User.findOne({
     where: {email},
     attributes: {include: 'password'},
   }),
   get: id => User.findByPk(id),
-  getAllStudents: () => User.findAll({where: {type: 'student'}, raw: true}),
+  getStudentsAssignedToQuiz: quizId => User.findAll({
+    where: {type: 'student'},
+    include: [
+      {
+        model: QuizAssociation,
+        as: 'assignedQuizzes',
+        where: {quizId},
+        required: false,
+      },
+    ],
+    raw: true,
+    nest: true,
+  }),
 });

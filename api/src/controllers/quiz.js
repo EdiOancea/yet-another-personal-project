@@ -16,10 +16,10 @@ export default ({QuizService}) => ({
 
     res.json(await QuizService.assign({quizId, studentIds, professorId}));
   },
-  get: async (req, res) => {
+  getList: async (req, res) => {
     const {loggedUser: {userId}, query} = req;
 
-    res.json(await QuizService.get(userId, query));
+    res.json(await QuizService.getAssociatedQuizzes(userId, query));
   },
   update: async (req, res) => {
     const {
@@ -34,14 +34,23 @@ export default ({QuizService}) => ({
 
     res.json(await QuizService.delete(quizId));
   },
-  getOne: async (req, res) => {
+  get: async (req, res) => {
     const {loggedUser: {userId, userType}, params: {quizId}} = req;
 
-    res.json(await QuizService.getOne(userId, quizId, userType));
+    res.json(await QuizService.get(userId, quizId, userType));
   },
   getAssignationMap: async (req, res) => {
     const {params: {quizId}} = req;
 
     res.json(await QuizService.getAssignationMap(quizId));
+  },
+  submit: async (req, res) => {
+    const {
+      loggedUser: {userId},
+      params: {quizId},
+      body,
+    } = req;
+
+    res.json(await QuizService.submit(userId, quizId, body));
   },
 });

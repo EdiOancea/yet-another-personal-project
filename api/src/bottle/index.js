@@ -19,7 +19,9 @@ import QuestionService from '../services/question';
 
 import UserRepository from '../repositories/user';
 import QuizRepository from '../repositories/quiz';
+import QuizAssociationRepository from '../repositories/quizAssociation';
 import QuestionRepository from '../repositories/question';
+import GivenAnswerRepository from '../repositories/givenAnswer';
 
 import AuthMiddleware from '../middlewares/auth';
 
@@ -44,7 +46,9 @@ bottle.factory('QuestionService', QuestionService);
 
 bottle.factory('UserRepository', UserRepository);
 bottle.factory('QuizRepository', QuizRepository);
+bottle.factory('QuizAssociationRepository', QuizAssociationRepository);
 bottle.factory('QuestionRepository', QuestionRepository);
+bottle.factory('GivenAnswerRepository', GivenAnswerRepository);
 
 bottle.factory('AuthMiddleware', AuthMiddleware);
 

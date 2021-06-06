@@ -48,13 +48,13 @@ const QuizPage = () => {
   );
   const onSubmit = quizId ? updateQuizMutation.mutate : createQuizMutation.mutate;
   const goToAssign = () => history.push(`/quiz/${quizId}/assign`);
-  const isReadOnly = quizId && isPast(new Date(quizQuery?.data?.startDate));
+  const isReadOnly = isPast(new Date(quizQuery?.data?.startDate));
   const title = !quizId
     ? 'Add Quiz'
     : isReadOnly
       ? 'View Quiz'
       : 'Update Quiz';
-  console.log(isReadOnly);
+
   return (
     <DrawerWrapper isLoading={quizQuery.isLoading}>
       <PageTitle title={title} />

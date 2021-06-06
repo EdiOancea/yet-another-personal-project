@@ -7,10 +7,7 @@ export default ({
     sequelize,
   },
 }) => ({
-  create: body => Question.create(
-    body,
-    {include: [Question.Answers]}
-  ),
+  create: body => Question.create(body, {include: [Question.Answers]}),
   get: ({quizId, questionId}) => Question.findOne({
     where: {id: questionId, quizId},
     include: [{model: Answer, as: 'answers'}],
@@ -27,7 +24,7 @@ export default ({
         rest,
         {
           where: {id},
-          include: [{model: Quiz, where: {id: quizId}, attributes: []}],
+          include: [{model: Quiz, where: {id: quizId}}],
           transaction,
         }
       );

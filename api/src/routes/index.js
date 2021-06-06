@@ -10,8 +10,9 @@ export default ({
   ],
   authenticated: [
     {route: '/api/me', method: 'get', callback: UserController.me},
-    {route: '/api/quiz', method: 'get', callback: QuizController.get},
-    {route: '/api/quiz/:quizId', method: 'get', callback: QuizController.getOne},
+    {route: '/api/quiz', method: 'get', callback: QuizController.getList},
+    {route: '/api/quiz/:quizId', method: 'get', callback: QuizController.get},
+    {route: '/api/quiz/:quizId/submit', method: 'post', callback: QuizController.submit},
   ],
   professorOnly: [
     {route: '/api/quiz', method: 'post', callback: QuizController.create},

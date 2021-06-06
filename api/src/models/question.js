@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   Question.associate = ({Quiz, Answer, GivenAnswer}) => {
     Question.belongsTo(Quiz, {foreignKey: 'quizId'});
     Question.Answers = Question.hasMany(Answer, {foreignKey: 'questionId', as: 'answers'});
-    Question.hasMany(GivenAnswer, {foreignKey: 'question_id', as: 'givenAnswers'});
+    Question.hasMany(GivenAnswer, {foreignKey: 'questionId', as: 'givenAnswers'});
   };
 
   return Question;
