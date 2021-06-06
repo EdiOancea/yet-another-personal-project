@@ -35,9 +35,12 @@ const AssignQuizPage = () => {
     <DrawerWrapper isLoading={quizAssignationMapQuery.isLoading || quizQuery.isLoading}>
       <PageTitle title={quizQuery.data?.description} />
       <CrudTable
+        columns={[
+          {header: 'First Name', key: 'firstName'},
+          {header: 'Last Name', key: 'lastName'},
+          {header: 'Version', key: 'version'},
+        ]}
         title="Assign students to this quiz"
-        headers={['First Name', 'Last Name', 'Version']}
-        rowKeys={['firstName', 'lastName', 'version']}
         entities={quizAssignationMapQuery.data}
         selectionProps={selectionProps}
       />

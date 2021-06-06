@@ -4,6 +4,7 @@ import {useMutation, useQuery} from 'react-query';
 import {Button, CircularProgress} from '@material-ui/core';
 import {Formik, Form} from 'formik';
 import * as yup from 'yup';
+import {isPast} from 'date-fns';
 
 import api from 'utils/api';
 import {PageTitle} from 'components';
@@ -47,19 +48,25 @@ const QuizPage = () => {
   );
   const onSubmit = quizId ? updateQuizMutation.mutate : createQuizMutation.mutate;
   const goToAssign = () => history.push(`/quiz/${quizId}/assign`);
-
+  const isReadOnly = quizId && isPast(new Date(quizQuery?.data?.startDate));
+  const title = !quizId
+    ? 'Add Quiz'
+    : isReadOnly
+      ? 'View Quiz'
+      : 'Update Quiz';
+  console.log(isReadOnly);
   return (
     <DrawerWrapper isLoading={quizQuery.isLoading}>
-      <PageTitle title={quizId ? 'Update Quiz' : 'Add Quiz'} />
+      <PageTitle title={title} />
       <Formik
         initialValues={quizId ? quizQuery.data : initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
         <Form>
-          <TextField name="description" label="Description" />
-          <DateTimeField name="startDate" label="Start Date" />
-          <DateTimeField name="endDate" label="End Date" />
+          <TextField name="description" label="Description" disabled={isReadOnly} />
+          <DateTimeField name="startDate" label="Start Date" disabled={isReadOnly} />
+          <DateTimeField name="endDate" label="End Date" disabled={isReadOnly} />
           {!quizId && (
             createQuizMutation.isLoading
               ? <CircularProgress size={24} />
@@ -67,13 +74,17 @@ const QuizPage = () => {
           )}
           {quizId && (
             <Fragment>
-              <QuizQuestions questions={quizQuery.data?.questions} />
-              {updateQuizMutation.isLoading
-                ? <CircularProgress size={24} />
-                : <Button type="submit" color="primary">Save</Button>}
-              <Button type="secondary" onClick={goToAssign}>
-                Assign
-              </Button>
+              <QuizQuestions questions={quizQuery.data?.questions} isReadOnly={isReadOnly} />
+              {!isReadOnly && (
+                <Fragment>
+                  {updateQuizMutation.isLoading
+                    ? <CircularProgress size={24} />
+                    : <Button type="submit" color="primary">Save</Button>}
+                  <Button type="secondary" onClick={goToAssign}>
+                    Assign
+                  </Button>
+                </Fragment>
+              )}
             </Fragment>
           )}
         </Form>

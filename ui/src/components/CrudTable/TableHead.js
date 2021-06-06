@@ -7,7 +7,7 @@ const useStyles = makeStyles(() => ({
   editButton: {width: '20px'},
 }));
 
-const CrudTableHead = ({selectionProps, entities, headers, onEdit, onDelete}) => {
+const CrudTableHead = ({selectionProps, entities, columns, onEdit, onDelete}) => {
   const classes = useStyles();
   const {onSelectAll, selected} = selectionProps || {};
 
@@ -24,7 +24,7 @@ const CrudTableHead = ({selectionProps, entities, headers, onEdit, onDelete}) =>
             />
           </TableCell>
         )}
-        {headers.map(header => <TableCell key={header}>{header}</TableCell>)}
+        {columns.map(({header}) => <TableCell key={header}>{header}</TableCell>)}
         {onEdit && <TableCell className={classes.editButton} />}
         {onDelete && <TableCell className={classes.deleteButton} />}
       </TableRow>

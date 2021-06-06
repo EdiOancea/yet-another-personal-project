@@ -3,12 +3,13 @@ import {useSelector} from 'react-redux';
 import {useHistory} from 'react-router';
 import {useQuery, useMutation} from 'react-query';
 import {Button} from '@material-ui/core';
-import {format} from 'date-fns';
+
 import api from 'utils/api';
 import DrawerWrapper from 'features/drawer/Drawer';
-
 import {PageTitle, CrudTable} from 'components';
 
+import QuizStatus from './QuizStatus';
+import QuizTiming from './QuizTiming';
 const PAGE_SIZE = 5;
 
 const QuizzesPage = () => {
@@ -27,16 +28,11 @@ const QuizzesPage = () => {
 
         return res.quizzes;
       }),
-    {keepPreviousData: true},
+    {keepPreviousData: true, refetchInterval: 60000},
   );
 
   const entities = useMemo(
-    () => (getQuizzesQuery.data || [])
-      .map(({startDate, endDate, ...rest}) => ({
-        ...rest,
-        startDate: format(new Date(startDate), 'HH:mm dd/MM'),
-        endDate: format(new Date(endDate), 'HH:mm dd/MM'),
-      })),
+    () => getQuizzesQuery.data || [],
     [getQuizzesQuery.data]
   );
   const deleteQuizMutation = useMutation(
@@ -48,8 +44,11 @@ const QuizzesPage = () => {
     <DrawerWrapper isLoading={getQuizzesQuery.isLoading}>
       <PageTitle title="Quizzes" />
       <CrudTable
-        headers={['Description', 'Start Date', 'End Date']}
-        rowKeys={['description', 'startDate', 'endDate']}
+        columns={[
+          {header: 'Description', key: 'description'},
+          {header: '', Component: QuizTiming},
+          {header: 'Status', Component: QuizStatus},
+        ]}
         entities={entities}
         isLoading={getQuizzesQuery.isLoading}
         onEdit={id => history.push(`/quiz/${id}/${isProfessor ? '' : 'take'}`)}

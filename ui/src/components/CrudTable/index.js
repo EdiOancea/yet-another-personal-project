@@ -6,9 +6,8 @@ import TableHead from './TableHead';
 import TableBody from './TableBody';
 
 const CrudTable = ({
-  headers = [],
+  columns = [],
   entities = [],
-  rowKeys = [],
   onDelete,
   onEdit,
   paginationProps = null,
@@ -19,14 +18,14 @@ const CrudTable = ({
       <TableHead
         selectionProps={selectionProps}
         entities={entities}
-        headers={headers}
+        columns={columns}
         onEdit={onEdit}
         onDelete={onDelete}
       />
       <TableBody
         selectionProps={selectionProps}
         entities={entities}
-        rowKeys={rowKeys}
+        columns={columns}
         onEdit={onEdit}
         onDelete={onDelete}
       />

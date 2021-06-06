@@ -12,12 +12,14 @@ const DateTimePickerField = ({
   defaultValue,
   label,
   name,
+  ...rest
 }) => {
   const [field, {touched, error = ' '}, {setValue}] = useField({name, defaultValue});
 
   return (
     <DateTimePicker
       {...{
+        ...rest,
         ...field,
         variant,
         inputVariant,

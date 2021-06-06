@@ -35,9 +35,9 @@ export default ({QuizService}) => ({
     res.json(await QuizService.delete(quizId));
   },
   getOne: async (req, res) => {
-    const {loggedUser: {userId}, params: {quizId}} = req;
+    const {loggedUser: {userId, userType}, params: {quizId}} = req;
 
-    res.json(await QuizService.getOne(userId, quizId));
+    res.json(await QuizService.getOne(userId, quizId, userType));
   },
   getAssignationMap: async (req, res) => {
     const {params: {quizId}} = req;

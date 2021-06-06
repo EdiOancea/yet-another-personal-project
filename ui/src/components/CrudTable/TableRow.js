@@ -6,7 +6,7 @@ const getDeepKey = (obj, key) => key
   .split('.')
   .reduce((acc, i) => (acc || {})[i], obj) || key;
 
-const CrudTableRow = ({entity, onDelete, onEdit, rowKeys, selectionProps}) => {
+const CrudTableRow = ({entity, onDelete, onEdit, columns, selectionProps}) => {
   const {selected, onSelect} = selectionProps || {};
 
   return (
@@ -19,11 +19,17 @@ const CrudTableRow = ({entity, onDelete, onEdit, rowKeys, selectionProps}) => {
           />
         </TableCell>
       )}
-      {rowKeys.map(key => (
-        <TableCell key={getDeepKey(entity, key)}>
-          {getDeepKey(entity, key)}
-        </TableCell>
-      ))}
+      {columns.map(({key, render, Component}) => {
+        if (typeof render === 'function') {
+          return <TableCell key={key}>{render(entity)}</TableCell>;
+        }
+
+        if (typeof Component === 'function') {
+          return <TableCell key={key}><Component entity={entity} /></TableCell>;
+        }
+
+        return <TableCell key={key}>{getDeepKey(entity, key)}</TableCell>;
+      })}
       {onEdit && (
         <TableCell>
           <IconButton onClick={() => onEdit(entity.id)}>

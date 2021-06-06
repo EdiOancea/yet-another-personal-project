@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
   header: {justifyContent: 'space-between'},
 }));
 
-const QuizQuestions = ({questions}) => {
+const QuizQuestions = ({questions, isReadOnly}) => {
   const classes = useStyles();
   const history = useHistory();
   const {quizId} = useParams();
@@ -49,7 +49,7 @@ const QuizQuestions = ({questions}) => {
     <Accordion>
       <AccordionSummary classes={{content: classes.header}}>
         See Questions
-        <AddIcon onClick={goToQuestion} />
+        {!isReadOnly && <AddIcon onClick={goToQuestion} />}
       </AccordionSummary>
       <AccordionDetails classes={{root: classes.questionGroups}}>
         {[1, 2, 3].map(version => (
@@ -62,12 +62,14 @@ const QuizQuestions = ({questions}) => {
                   <Accordion key={id}>
                     <AccordionSummary classes={{content: classes.header}}>
                       {statement}
-                      <span>
-                        <EditIcon onClick={e => goToQuestion(e, id)} />
-                        {deleteQuestionMutation.isLoading
-                          ? <CircularProgress size={24} />
-                          : <DeleteIcon onClick={e => deleteQuestion(e, id)} />}
-                      </span>
+                      {!isReadOnly && (
+                        <span>
+                          <EditIcon onClick={e => goToQuestion(e, id)} />
+                          {deleteQuestionMutation.isLoading
+                            ? <CircularProgress size={24} />
+                            : <DeleteIcon onClick={e => deleteQuestion(e, id)} />}
+                        </span>
+                      )}
                     </AccordionSummary>
                     <AccordionDetails>
                       <FormGroup>
