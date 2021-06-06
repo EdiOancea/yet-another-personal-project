@@ -10,10 +10,11 @@ import {
 } from '@material-ui/core';
 
 const RadioGroup = ({name, options = [], label, ...rest}) => {
-  const [field, {touched, error}] = useField({name});
+  const [field, {touched, error = ' '}] = useField({name});
+  const isError = touched && error !== ' ';
 
   return (
-    <FormControl>
+    <FormControl error={isError}>
       <FormLabel>{label}</FormLabel>
       <MUIRadioGroup {...{...field, ...rest}}>
         {options.map(option => (
@@ -25,7 +26,7 @@ const RadioGroup = ({name, options = [], label, ...rest}) => {
           />
         ))}
       </MUIRadioGroup>
-      {touched && <FormHelperText>{error}</FormHelperText>}
+      <FormHelperText>{touched ? error : ' '}</FormHelperText>
     </FormControl>
   );
 };

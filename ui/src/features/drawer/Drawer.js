@@ -20,12 +20,16 @@ import {SIDEBAR_ITEMS_LIST} from './config';
 const useStyles = makeStyles(theme => ({
   root: {display: 'flex', height: '100%'},
   appBar: {zIndex: theme.zIndex.drawer + 1},
-  drawer: {width: 240, flexShrink: 0},
-  drawerPaper: {width: 240},
+  drawer: {width: 300, flexShrink: 0},
+  drawerPaper: {width: 300},
   drawerContainer: {overflow: 'auto'},
-  content: {flexGrow: 1, padding: theme.spacing(3)},
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    height: 'fit-content',
+  },
   link: {textDecoration: 'none', color: 'inherit'},
-  children: {padding: theme.spacing(3), height: 'fit-content', minHeight: '500px'},
+  children: {padding: theme.spacing(3)},
 }));
 
 const DrawerWrapper = ({children, isLoading}) => {
@@ -58,12 +62,17 @@ const DrawerWrapper = ({children, isLoading}) => {
           ))}
         </div>
       </Drawer>
-      <main className={classes.content}>
-        <Toolbar />
-        <Paper elevation={2} className={classes.children}>
-          {isLoading ? <FullPageLoader /> : children}
-        </Paper>
-      </main>
+      {isLoading
+        ? <FullPageLoader />
+        : (
+          <main className={classes.content}>
+            <Toolbar />
+            <Paper elevation={2} className={classes.children}>
+              {children}
+            </Paper>
+          </main>
+        )}
+
     </div>
   );
 };

@@ -3,7 +3,14 @@ import {TableBody, TableRow, TableCell} from '@material-ui/core';
 
 import CrudTableRow from './TableRow';
 
-const CrudTableBody = ({selectionProps, entities, columns, onEdit, onDelete}) => {
+const CrudTableBody = ({
+  selectionProps,
+  entities,
+  columns,
+  onEdit,
+  onDelete,
+  entityIdBeingDeleted,
+}) => {
   const emptyRows = Math.max(0, 5 - entities.length);
 
   return (
@@ -16,6 +23,7 @@ const CrudTableBody = ({selectionProps, entities, columns, onEdit, onDelete}) =>
           columns={columns}
           onEdit={onEdit}
           onDelete={onDelete}
+          isDeleting={entityIdBeingDeleted === entity.id}
         />
       ))}
       {emptyRows > 0 && (

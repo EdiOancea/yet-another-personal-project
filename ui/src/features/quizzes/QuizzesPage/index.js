@@ -18,6 +18,7 @@ const QuizzesPage = () => {
   const isProfessor = userType === 'professor';
   const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
+  const [entityIdBeingDeleted, setEntityIdBeingDeleted] = useState('');
 
   const getQuizzesQuery = useQuery(
     ['quizzes', 'page', page],
@@ -37,7 +38,13 @@ const QuizzesPage = () => {
   );
   const deleteQuizMutation = useMutation(
     id => api.delete(`/quiz/${id}`),
-    {onSuccess: getQuizzesQuery.refetch}
+    {
+      onMutate: setEntityIdBeingDeleted,
+      onSuccess: () => {
+        getQuizzesQuery.refetch();
+        setEntityIdBeingDeleted('');
+      },
+    }
   );
 
   return (
@@ -50,13 +57,19 @@ const QuizzesPage = () => {
           {header: 'Status', Component: QuizStatus},
         ]}
         entities={entities}
+        entityIdBeingDeleted={entityIdBeingDeleted}
         isLoading={getQuizzesQuery.isLoading}
         onEdit={id => history.push(`/quiz/${id}/${isProfessor ? '' : 'take'}`)}
         onDelete={isProfessor && deleteQuizMutation.mutate}
         paginationProps={{page, setPage, rowsPerPage: PAGE_SIZE, count}}
+        emptyTableProps={{
+          text: 'There are no quizzes available',
+          buttonText: 'Create a Quiz',
+          onClick: () => history.push('/quiz'),
+        }}
       />
       {isProfessor
-        && <Button onClick={() => history.push('/quiz')}>Add a quiz</Button>}
+        && <Button onClick={() => history.push('/quiz')}>Create a Quiz</Button>}
     </DrawerWrapper>
   );
 };

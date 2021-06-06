@@ -1,12 +1,25 @@
 import React from 'react';
-import {TableRow, TableCell, Checkbox, IconButton} from '@material-ui/core';
+import {
+  TableRow,
+  TableCell,
+  Checkbox,
+  IconButton,
+  CircularProgress,
+} from '@material-ui/core';
 import {Delete as DeleteIcon, Edit as EditIcon} from '@material-ui/icons';
 
 const getDeepKey = (obj, key) => key
   .split('.')
   .reduce((acc, i) => (acc || {})[i], obj) || key;
 
-const CrudTableRow = ({entity, onDelete, onEdit, columns, selectionProps}) => {
+const CrudTableRow = ({
+  entity,
+  onDelete,
+  onEdit,
+  columns,
+  selectionProps,
+  isDeleting,
+}) => {
   const {selected, onSelect} = selectionProps || {};
 
   return (
@@ -32,16 +45,20 @@ const CrudTableRow = ({entity, onDelete, onEdit, columns, selectionProps}) => {
       })}
       {onEdit && (
         <TableCell>
-          <IconButton onClick={() => onEdit(entity.id)}>
+          <IconButton onClick={() => onEdit(entity.id)} disabled={isDeleting}>
             <EditIcon />
           </IconButton>
         </TableCell>
       )}
       {onDelete && (
         <TableCell>
-          <IconButton onClick={() => onDelete(entity.id)}>
-            <DeleteIcon />
-          </IconButton>
+          {isDeleting
+            ? <CircularProgress size={24} />
+            : (
+              <IconButton onClick={() => onDelete(entity.id)}>
+                <DeleteIcon />
+              </IconButton>
+            )}
         </TableCell>
       )}
     </TableRow>

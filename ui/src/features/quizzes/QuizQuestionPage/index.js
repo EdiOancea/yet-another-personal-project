@@ -2,15 +2,18 @@ import React from 'react';
 import {useParams, useHistory} from 'react-router';
 import {useMutation, useQuery} from 'react-query';
 import {Button, CircularProgress} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import {Formik, Form} from 'formik';
 import * as yup from 'yup';
 
 import api from 'utils/api';
 import {PageTitle} from 'components';
-import {TextField, SelectField} from 'utils/form';
+import {TextField, SelectField, RadioGroup} from 'utils/form';
 import DrawerWrapper from 'features/drawer/Drawer';
 
 import QuizQuestionAnswersTable from './QuizQuestionAnswersTable';
+
+const useStyles = makeStyles(() => ({form: {width: 500}}));
 
 const initialValues = {
   statement: '',
@@ -36,6 +39,7 @@ const validationSchema = yup.object().shape({
 });
 
 const QuizQuestionPage = () => {
+  const classes = useStyles();
   const {quizId, questionId} = useParams();
   const history = useHistory();
   const questionQuery = useQuery(
@@ -63,10 +67,18 @@ const QuizQuestionPage = () => {
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        <Form>
+        <Form className={classes.form}>
           <TextField name="statement" label="Question Statement" />
           <TextField type="number" name="availablePoints" label="Available Points" />
-          <TextField type="number" name="version" label="Version" />
+          <RadioGroup
+            name="version"
+            label="Version"
+            options={[
+              {label: 'A', value: '1'},
+              {label: 'B', value: '2'},
+              {label: 'C', value: '3'},
+            ]}
+          />
           <SelectField
             name="type"
             label="Question Type"

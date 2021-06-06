@@ -5,6 +5,7 @@ import {CircularProgress} from '@material-ui/core';
 const useStyles = makeStyles(() => ({
   loaderWrapper: {
     height: '100%',
+    width: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

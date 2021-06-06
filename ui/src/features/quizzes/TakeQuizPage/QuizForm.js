@@ -48,7 +48,6 @@ const QuizForm = ({questions}) => {
   const {quizId} = useParams();
   const submitFormMutation = useMutation(
     values => api.post(`/quiz/${quizId}/submit`, parseValues(questions, values)),
-    {onSuccess: (...args) => console.log(args)}
   );
 
   return (

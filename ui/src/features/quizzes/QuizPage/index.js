@@ -2,15 +2,18 @@ import React, {Fragment} from 'react';
 import {useHistory, useParams} from 'react-router';
 import {useMutation, useQuery} from 'react-query';
 import {Button, CircularProgress} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import {Formik, Form} from 'formik';
 import * as yup from 'yup';
 import {isPast} from 'date-fns';
 
 import api from 'utils/api';
-import {PageTitle} from 'components';
+import {PageTitle, Snackbar} from 'components';
 import {TextField, DateTimeField} from 'utils/form';
 import DrawerWrapper from 'features/drawer/Drawer';
 import QuizQuestions from './QuizQuestions';
+
+const useStyles = makeStyles(() => ({form: {width: 500}}));
 
 const initialValues = {
   description: '',
@@ -31,6 +34,7 @@ const validationSchema = yup.object().shape({
 });
 
 const QuizPage = () => {
+  const classes = useStyles();
   const history = useHistory();
   const {quizId} = useParams();
   const quizQuery = useQuery(
@@ -63,7 +67,7 @@ const QuizPage = () => {
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        <Form>
+        <Form className={classes.form}>
           <TextField name="description" label="Description" disabled={isReadOnly} />
           <DateTimeField name="startDate" label="Start Date" disabled={isReadOnly} />
           <DateTimeField name="endDate" label="End Date" disabled={isReadOnly} />
