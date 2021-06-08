@@ -23,10 +23,12 @@ export default ({
     getAssignationMap: async quizId => {
       const allStudents = await UserRepository.getStudentsAssignedToQuiz(quizId);
 
-      return allStudents.map(({assignedQuizzes, version, ...student}) => ({
-        ...student,
-        version: version || 0,
-      }));
+      return allStudents
+        .map(student => student.dataValues)
+        .map(({assignedQuizzes: [assignedQuiz], ...student}) => ({
+          ...student,
+          version: assignedQuiz ? assignedQuiz.dataValues.version : 0,
+        }));
     },
     get: async (userId, quizId, userType) => {
       const {quizAssociation, quiz, startDate, endDate} = await getParsedQuizAssociation(userId, quizId);

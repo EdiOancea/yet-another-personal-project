@@ -15,7 +15,5 @@ export default ({db: {User, QuizAssociation}}) => ({
         required: false,
       },
     ],
-    raw: true,
-    nest: true,
   }),
 });

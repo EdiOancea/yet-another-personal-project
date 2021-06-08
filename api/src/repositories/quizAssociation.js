@@ -53,6 +53,8 @@ export default ({
         })),
         {updateOnDuplicate: ['quizId', 'userId'], transaction}
       );
+
+      return 'OK';
     }
   ),
 });
