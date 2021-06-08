@@ -23,7 +23,7 @@ const QuizzesPage = () => {
   const getQuizzesQuery = useQuery(
     ['quizzes', 'page', page],
     () => api
-      .get(`/quiz?pageSize=${PAGE_SIZE}&page=${page}`)
+      .get(`/quiz-associations?pageSize=${PAGE_SIZE}&page=${page}`)
       .then(res => {
         setCount(res.count);
 
@@ -37,9 +37,9 @@ const QuizzesPage = () => {
     [getQuizzesQuery.data]
   );
   const deleteQuizMutation = useMutation(
-    id => api.delete(`/quiz/${id}`),
+    ({quizId}) => api.delete(`/quiz/${quizId}`),
     {
-      onMutate: setEntityIdBeingDeleted,
+      onMutate: ({id}) => setEntityIdBeingDeleted(id),
       onSuccess: () => {
         getQuizzesQuery.refetch();
         setEntityIdBeingDeleted('');
@@ -52,14 +52,14 @@ const QuizzesPage = () => {
       <PageTitle title="Quizzes" />
       <CrudTable
         columns={[
-          {header: 'Description', key: 'description'},
+          {header: 'Description', key: 'quiz.description'},
           {header: '', Component: QuizTiming},
           {header: 'Status', Component: QuizStatus},
         ]}
         entities={entities}
         entityIdBeingDeleted={entityIdBeingDeleted}
         isLoading={getQuizzesQuery.isLoading}
-        onEdit={id => history.push(`/quiz/${id}/${isProfessor ? '' : 'take'}`)}
+        onEdit={({quizId}) => history.push(`/quiz/${quizId}/${isProfessor ? '' : 'take'}`)}
         onDelete={isProfessor && deleteQuizMutation.mutate}
         paginationProps={{page, setPage, rowsPerPage: PAGE_SIZE, count}}
         emptyTableProps={{

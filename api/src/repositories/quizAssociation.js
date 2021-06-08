@@ -27,6 +27,12 @@ export default ({
       },
     ],
   }),
+  getList: (userId, {page, pageSize}) => QuizAssociation.findAndCountAll({
+    where: {userId},
+    include: [{model: Quiz, as: 'quiz'}],
+    offset: page * pageSize,
+    limit: pageSize,
+  }),
   assign: ({studentIds, quizId, professorId}) => sequelize.transaction(
     async transaction => {
       await QuizAssociation.destroy(

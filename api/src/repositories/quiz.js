@@ -5,16 +5,4 @@ export default ({db: {Quiz, QuizAssociation}}) => ({
   ),
   update: body => Quiz.update(body, {where: {id: body.id}}),
   delete: id => Quiz.destroy({where: {id}}),
-  getList: (userId, {page, pageSize}) => Quiz.findAndCountAll({
-    include: [
-      {
-        model: QuizAssociation,
-        as: 'associations',
-        where: {userId},
-        attributes: [],
-      },
-    ],
-    offset: page * pageSize,
-    limit: pageSize,
-  }),
 });

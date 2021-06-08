@@ -1,6 +1,6 @@
 import {isBefore, formatDistanceToNow} from 'date-fns';
 
-const QuizTiming = ({entity: {startDate, endDate}}) => {
+const QuizTiming = ({entity: {quiz: {startDate, endDate}}}) => {
   const now = new Date();
   const start = new Date(startDate);
   const end = new Date(endDate);

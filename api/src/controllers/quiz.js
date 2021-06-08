@@ -16,11 +16,6 @@ export default ({QuizService}) => ({
 
     res.json(await QuizService.assign({quizId, studentIds, professorId}));
   },
-  getList: async (req, res) => {
-    const {loggedUser: {userId}, query} = req;
-
-    res.json(await QuizService.getList(userId, query));
-  },
   update: async (req, res) => {
     const {
       body: {description, startDate, endDate},

@@ -2,7 +2,7 @@ import React from 'react';
 import {Chip} from '@material-ui/core';
 import {isBefore} from 'date-fns';
 
-const QuizStatus = ({entity: {startDate, endDate}}) => {
+const QuizStatus = ({entity: {quiz: {startDate, endDate}}}) => {
   const now = new Date();
   const start = new Date(startDate);
   const end = new Date(endDate);

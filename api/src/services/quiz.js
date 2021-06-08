@@ -20,7 +20,6 @@ export default ({
     update: QuizRepository.update,
     delete: QuizRepository.delete,
     assign: QuizAssociationRepository.assign,
-    getList: QuizRepository.getList,
     getAssignationMap: async quizId => {
       const allStudents = await UserRepository.getStudentsAssignedToQuiz(quizId);
 

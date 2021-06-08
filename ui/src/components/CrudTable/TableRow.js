@@ -45,7 +45,7 @@ const CrudTableRow = ({
       })}
       {onEdit && (
         <TableCell>
-          <IconButton onClick={() => onEdit(entity.id)} disabled={isDeleting}>
+          <IconButton onClick={() => onEdit(entity)} disabled={isDeleting}>
             <EditIcon />
           </IconButton>
         </TableCell>
@@ -55,7 +55,7 @@ const CrudTableRow = ({
           {isDeleting
             ? <CircularProgress size={24} />
             : (
-              <IconButton onClick={() => onDelete(entity.id)}>
+              <IconButton onClick={() => onDelete(entity)}>
                 <DeleteIcon />
               </IconButton>
             )}

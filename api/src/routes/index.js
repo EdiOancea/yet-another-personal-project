@@ -2,6 +2,7 @@ export default ({
   AuthController,
   UserController,
   QuizController,
+  QuizAssociationController,
   QuestionController,
 }) => ({
   unAuthenticated: [
@@ -10,7 +11,7 @@ export default ({
   ],
   authenticated: [
     {route: '/api/me', method: 'get', callback: UserController.me},
-    {route: '/api/quiz', method: 'get', callback: QuizController.getList},
+    {route: '/api/quiz-associations', method: 'get', callback: QuizAssociationController.getList},
     {route: '/api/quiz/:quizId', method: 'get', callback: QuizController.get},
     {route: '/api/quiz/:quizId/submit', method: 'post', callback: QuizController.submit},
   ],
