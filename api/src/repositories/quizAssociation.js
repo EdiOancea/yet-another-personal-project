@@ -10,13 +10,12 @@ export default ({
     sequelize,
   },
 }) => ({
-  get: (userId, quizId) => QuizAssociation.findOne({
-    where: {userId},
+  get: quizAssociationId => QuizAssociation.findOne({
+    where: {id: quizAssociationId},
     include: [
       {
         model: Quiz,
         as: 'quiz',
-        where: {id: quizId},
         include: [
           {
             model: Question,
@@ -25,7 +24,19 @@ export default ({
           },
         ],
       },
+      {
+        model: GivenAnswer,
+        as: 'givenAnswers',
+        where: {quizAssociationId},
+        required: false,
+      },
     ],
+  }),
+  getQuizAssociationId: (userId, quizId) => QuizAssociation.findOne({
+    where: {userId},
+    include: [{model: Quiz, as: 'quiz', where: {id: quizId}, attributes: [], required: true}],
+    attributes: ['id'],
+    raw: true,
   }),
   getList: (userId, {page, pageSize}) => QuizAssociation.findAndCountAll({
     where: {userId},

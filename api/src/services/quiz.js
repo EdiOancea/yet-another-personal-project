@@ -7,12 +7,18 @@ export default ({
   GivenAnswerRepository,
 }) => {
   const getParsedQuizAssociation = async (userId, quizId) => {
-    const quizAssociation = await QuizAssociationRepository.get(userId, quizId);
+    const quizAssociationId = (await QuizAssociationRepository.getQuizAssociationId(userId, quizId)).id;
+    const quizAssociation = (await QuizAssociationRepository.get(quizAssociationId)).dataValues;
     const quiz = quizAssociation.quiz.dataValues;
     const startDate = new Date(quiz.startDate);
     const endDate = new Date(quiz.endDate);
 
-    return {quizAssociation, quiz, startDate, endDate};
+    return {
+      quizAssociation,
+      quiz: {...quiz, givenAnswers: quizAssociation.givenAnswers},
+      startDate,
+      endDate,
+    };
   };
 
   return {
