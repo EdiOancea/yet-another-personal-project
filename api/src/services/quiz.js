@@ -5,74 +5,79 @@ export default ({
   QuizAssociationRepository,
   UserRepository,
   GivenAnswerRepository,
-}) => ({
-  create: QuizRepository.create,
-  update: QuizRepository.update,
-  delete: QuizRepository.delete,
-  assign: QuizAssociationRepository.setQuizAssociations,
-  getAssociatedQuizzes: async (userId, query) => {
-    const {count, rows} = await QuizRepository.getAssociatedQuizzes(userId, query);
-
-    return {count, quizzes: rows};
-  },
-  get: async (userId, quizId, userType) => {
+}) => {
+  const getParsedQuizAssociation = async (userId, quizId) => {
     const quizAssociation = await QuizAssociationRepository.get(userId, quizId);
     const quiz = quizAssociation.quiz.dataValues;
-    const questions = quiz.questions
-      .map(({dataValues}) => dataValues)
-      .filter(({version}) => version === quizAssociation.version);
     const startDate = new Date(quiz.startDate);
     const endDate = new Date(quiz.endDate);
 
-    if (userType === 'professor') {
-      return quiz;
-    }
+    return {quizAssociation, quiz, startDate, endDate};
+  };
 
-    if (isPast(endDate)) {
-      return {...quiz, questions};
-    }
+  return {
+    create: QuizRepository.create,
+    update: QuizRepository.update,
+    delete: QuizRepository.delete,
+    assign: QuizAssociationRepository.assign,
+    getList: QuizRepository.getList,
+    getAssignationMap: async quizId => {
+      const allStudents = await UserRepository.getStudentsAssignedToQuiz(quizId);
 
-    return {
-      ...quiz,
-      questions: isFuture(startDate)
-        ? []
-        : questions
-          .map(({answers, ...restQuestion}) => ({
-            ...restQuestion,
-            answers: answers
-              .map(({dataValues}) => dataValues)
-              .map(({isCorrect, ...restAnswer}) => restAnswer),
-          })),
-    };
-  },
-  getAssignationMap: async quizId => {
-    const allStudents = await UserRepository.getStudentsAssignedToQuiz(quizId);
+      return allStudents.map(({assignedQuizzes, version, ...student}) => ({
+        ...student,
+        version: version || 0,
+      }));
+    },
+    get: async (userId, quizId, userType) => {
+      const {quizAssociation, quiz, startDate, endDate} = await getParsedQuizAssociation(userId, quizId);
 
-    return allStudents.map(({assignedQuizzes, ...student}) => ({
-      ...student,
-      version: assignedQuizzes.version || 0,
-    }));
-  },
-  submit: async (userId, quizId, body) => {
-    const quiz = await QuizRepository.get(userId, quizId);
-    const quizAssociationId = quiz.QuizAssociations[0].id;
-    const startDate = new Date(quiz.startDate);
-    const endDate = new Date(quiz.endDate);
-    const answers = Object
-      .entries(body)
-      .map(([questionId, answer]) => {
-        const commonAnswer = {questionId, points: 0, quizAssociationId};
+      if (userType === 'professor') {
+        return quiz;
+      }
 
-        return typeof answer === 'string'
-          ? {...commonAnswer, answerId: null, statement: answer}
-          : answer.map(answerId => ({...commonAnswer, statement: '', answerId}));
-      })
-      .flat();
+      const questions = quiz.questions
+        .map(question => question.dataValues)
+        .filter(question => question.version === quizAssociation.version);
 
-    if (isFuture(startDate) || isPast(endDate)) {
-      return null;
-    }
+      if (isPast(endDate)) {
+        return {...quiz, questions};
+      }
 
-    return GivenAnswerRepository.bulkCreate(answers);
-  },
-});
+      return {
+        ...quiz,
+        questions: isFuture(startDate)
+          ? []
+          : questions
+            .map(({answers, ...restQuestion}) => ({
+              ...restQuestion,
+              answers: answers
+                .map(({dataValues}) => dataValues)
+                .map(({isCorrect, ...restAnswer}) => restAnswer),
+            })),
+      };
+    },
+    submit: async (userId, quizId, body) => {
+      const {quizAssociation, quiz, startDate, endDate} = await getParsedQuizAssociation(userId, quizId);
+
+      if (isFuture(startDate) || isPast(endDate)) {
+        return 'This is not the time to submit this';
+      }
+
+      await GivenAnswerRepository.bulkCreate(
+        Object
+          .entries(body)
+          .map(([questionId, answer]) => {
+            const commonAnswer = {questionId, points: 0, quizAssociationId: quizAssociation.id};
+
+            return typeof answer === 'string'
+              ? {...commonAnswer, answerId: null, statement: answer}
+              : answer.map(answerId => ({...commonAnswer, statement: '', answerId}));
+          })
+          .flat()
+      );
+
+      return 'OK';
+    },
+  };
+};

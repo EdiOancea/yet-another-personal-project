@@ -27,7 +27,7 @@ const QuizzesPage = () => {
       .then(res => {
         setCount(res.count);
 
-        return res.quizzes;
+        return res.rows;
       }),
     {keepPreviousData: true, refetchInterval: 60000},
   );

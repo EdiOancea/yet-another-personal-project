@@ -7,6 +7,7 @@ import DrawerWrapper from 'features/drawer/Drawer';
 import {PageTitle} from 'components';
 import api from 'utils/api';
 import QuizForm from './QuizForm';
+import QuizTimer from './QuizTimer';
 
 const TakeQuizPage = () => {
   const {quizId} = useParams();
@@ -21,9 +22,8 @@ const TakeQuizPage = () => {
   return (
     <DrawerWrapper isLoading={quizQuery.isLoading}>
       <PageTitle title={quizQuery.data?.description} />
-      {isFuture(startDate) && 'todo'}
+      {isFuture(startDate) && <QuizTimer startDate={startDate} />}
       {isPast(startDate) && isFuture(endDate) && <QuizForm questions={quizQuery.data?.questions} />}
-      <QuizForm questions={quizQuery.data?.questions} />
     </DrawerWrapper>
   );
 };

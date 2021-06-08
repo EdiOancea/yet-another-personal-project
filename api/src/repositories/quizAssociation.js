@@ -5,6 +5,7 @@ export default ({
     Question,
     Answer,
     User,
+    GivenAnswer,
     Sequelize,
     sequelize,
   },
@@ -26,7 +27,7 @@ export default ({
       },
     ],
   }),
-  setQuizAssociations: ({studentIds, quizId, professorId}) => sequelize.transaction(
+  assign: ({studentIds, quizId, professorId}) => sequelize.transaction(
     async transaction => {
       await QuizAssociation.destroy(
         {

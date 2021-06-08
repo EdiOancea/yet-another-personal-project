@@ -1,10 +1,11 @@
 export default ({QuestionRepository}) => ({
+  get: QuestionRepository.get,
+  delete: QuestionRepository.delete,
   create: ({type, answers, ...rest}) => QuestionRepository.create({
     ...rest,
     type,
     answers: type === 'essay' ? [] : answers,
   }),
-  get: QuestionRepository.get,
   update: ({type, answers, id, ...rest}) => {
     const parsedAnswers = type === 'essay'
       ? []
@@ -21,5 +22,4 @@ export default ({QuestionRepository}) => ({
       answerIdsToKeep,
     });
   },
-  delete: QuestionRepository.delete,
 });

@@ -19,7 +19,7 @@ export default ({QuizService}) => ({
   getList: async (req, res) => {
     const {loggedUser: {userId}, query} = req;
 
-    res.json(await QuizService.getAssociatedQuizzes(userId, query));
+    res.json(await QuizService.getList(userId, query));
   },
   update: async (req, res) => {
     const {
