@@ -23,7 +23,7 @@ import UserRepository from '../repositories/user';
 import QuizRepository from '../repositories/quiz';
 import QuizAssociationRepository from '../repositories/quizAssociation';
 import QuestionRepository from '../repositories/question';
-import GivenAnswerRepository from '../repositories/givenAnswer';
+import AnsweredQuestionRepository from '../repositories/answeredQuestion';
 
 import AuthMiddleware from '../middlewares/auth';
 
@@ -52,7 +52,7 @@ bottle.factory('UserRepository', UserRepository);
 bottle.factory('QuizRepository', QuizRepository);
 bottle.factory('QuizAssociationRepository', QuizAssociationRepository);
 bottle.factory('QuestionRepository', QuestionRepository);
-bottle.factory('GivenAnswerRepository', GivenAnswerRepository);
+bottle.factory('AnsweredQuestionRepository', AnsweredQuestionRepository);
 
 bottle.factory('AuthMiddleware', AuthMiddleware);
 

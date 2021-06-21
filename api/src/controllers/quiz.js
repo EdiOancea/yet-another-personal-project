@@ -1,11 +1,11 @@
 export default ({QuizService}) => ({
   create: async (req, res) => {
     const {
-      body: {description, startDate, endDate},
+      body: {title, description, startDate, endDate},
       loggedUser: {userId},
     } = req;
 
-    res.json(await QuizService.create({description, userId, startDate, endDate}));
+    res.json(await QuizService.create({title, description, userId, startDate, endDate}));
   },
   assign: async (req, res) => {
     const {
@@ -18,11 +18,11 @@ export default ({QuizService}) => ({
   },
   update: async (req, res) => {
     const {
-      body: {description, startDate, endDate},
+      body: {title, description, startDate, endDate},
       params: {quizId},
     } = req;
 
-    res.json(await QuizService.update({description, startDate, endDate, id: quizId}));
+    res.json(await QuizService.update({title, description, startDate, endDate, id: quizId}));
   },
   delete: async (req, res) => {
     const {params: {quizId}} = req;

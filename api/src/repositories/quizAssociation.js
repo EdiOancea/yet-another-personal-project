@@ -4,8 +4,7 @@ export default ({
     Quiz,
     Question,
     Answer,
-    User,
-    GivenAnswer,
+    AnsweredQuestion,
     Sequelize,
     sequelize,
   },
@@ -25,8 +24,8 @@ export default ({
         ],
       },
       {
-        model: GivenAnswer,
-        as: 'givenAnswers',
+        model: AnsweredQuestion,
+        as: 'answeredQuestions',
         where: {quizAssociationId},
         required: false,
       },
@@ -44,26 +43,13 @@ export default ({
     offset: page * pageSize,
     limit: pageSize,
   }),
-  assign: ({studentIds, quizId, professorId}) => sequelize.transaction(
+  assign: (quizId, professorId, associations) => sequelize.transaction(
     async transaction => {
       await QuizAssociation.destroy(
-        {
-          where: {
-            quizId,
-            userId: {[Sequelize.Op.notIn]: [...studentIds, professorId]},
-          },
-          include: [{model: User, where: {type: 'student'}}],
-        },
+        {where: {quizId, userId: {[Sequelize.Op.ne]: professorId}}},
         {transaction}
       );
-      await QuizAssociation.bulkCreate(
-        studentIds.map(userId => ({
-          quizId,
-          userId,
-          version: Math.floor(Math.random() * 3 + 1),
-        })),
-        {updateOnDuplicate: ['quizId', 'userId'], transaction}
-      );
+      await QuizAssociation.bulkCreate(associations, {transaction});
 
       return 'OK';
     }

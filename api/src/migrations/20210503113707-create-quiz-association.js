@@ -24,7 +24,16 @@ module.exports = {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
           },
-          version: {type: Sequelize.INTEGER},
+          peerId: {
+            type: Sequelize.UUID,
+            field: 'peer_id',
+            references: {model: 'users', key: 'id'},
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+          },
+          version: Sequelize.STRING,
+          finalGrade: {type: Sequelize.INTEGER, field: 'final_grade'},
+          comment: Sequelize.STRING,
         },
         {transaction}
       );

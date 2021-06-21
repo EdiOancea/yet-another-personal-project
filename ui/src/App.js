@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
 import {BrowserRouter, Switch, Redirect} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
@@ -6,18 +6,19 @@ import {CssBaseline} from '@material-ui/core';
 
 import api from 'utils/api';
 import {UnprotectedRoute, ProtectedRoute} from 'utils/routing';
-import {FullPageLoader} from 'components';
-import {setLoggedUser} from 'features/signIn/authSlice';
-import SignInPage from 'features/signIn/SignInPage';
-import SignUpPage from 'features/signUp/SignUpPage';
-import Dashboard from 'features/dashboard/DashboardPage';
-import Quizzes from 'features/quizzes/QuizzesPage';
-import Quiz from 'features/quizzes/QuizPage';
-import QuizQuestion from 'features/quizzes/QuizQuestionPage';
-import AssignQuiz from 'features/quizzes/AssignQuizPage';
-import TakeQuiz from 'features/quizzes/TakeQuizPage';
+import {AppLayout} from 'components';
+import {setLoggedUser, logIn} from 'features/SignInPage/authSlice';
+import SignInPage from 'features/SignInPage';
+import SignUpPage from 'features/SignUpPage';
+import QuizzesPage from 'features/QuizzesPage';
+import QuizPage from 'features/QuizPage';
+import QuizQuestionPage from 'features/QuizQuestionPage';
+import AssignQuizPage from 'features/AssignQuizPage';
+import GradeQuizPage from 'features/GradeQuizPage';
+import TakeQuizPage from 'features/TakeQuizPage';
 
 const App = () => {
+  const [didLoadFromLocalStorage, setDidLoadFromLocalStorage] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const meQuery = useQuery(
@@ -29,31 +30,41 @@ const App = () => {
     },
   );
 
-  if (meQuery.isLoading) {
-    return <FullPageLoader />;
+  useEffect(() => {
+    const storageToken = localStorage.getItem('token');
+
+    if (storageToken) {
+      dispatch(logIn(storageToken));
+    }
+
+    setDidLoadFromLocalStorage(true);
+  }, [dispatch]);
+
+  if (!didLoadFromLocalStorage || meQuery.isLoading) {
+    return <AppLayout isLoading />;
   }
 
   return (
     <BrowserRouter>
       <CssBaseline />
       <Switch>
-        <ProtectedRoute path="/dashboard" types={['professor', 'student']}>
-          <Dashboard />
-        </ProtectedRoute>
         <ProtectedRoute path="/quiz/:quizId/question/:questionId?" types={['professor']}>
-          <QuizQuestion />
+          <QuizQuestionPage />
         </ProtectedRoute>
         <ProtectedRoute path="/quiz/:quizId/assign" types={['professor']}>
-          <AssignQuiz />
+          <AssignQuizPage />
+        </ProtectedRoute>
+        <ProtectedRoute path="/quiz/:quizId/grade" types={['professor']}>
+          <GradeQuizPage />
         </ProtectedRoute>
         <ProtectedRoute path="/quiz/:quizId?/take" types={['student']}>
-          <TakeQuiz />
+          <TakeQuizPage />
         </ProtectedRoute>
         <ProtectedRoute path="/quiz/:quizId?" types={['professor']}>
-          <Quiz />
+          <QuizPage />
         </ProtectedRoute>
         <ProtectedRoute path="/quizzes" types={['professor', 'student']}>
-          <Quizzes />
+          <QuizzesPage />
         </ProtectedRoute>
         <UnprotectedRoute path="/signin">
           <SignInPage />

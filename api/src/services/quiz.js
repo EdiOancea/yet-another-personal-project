@@ -4,7 +4,7 @@ export default ({
   QuizRepository,
   QuizAssociationRepository,
   UserRepository,
-  GivenAnswerRepository,
+  AnsweredQuestionRepository,
 }) => {
   const getParsedQuizAssociation = async (userId, quizId) => {
     const quizAssociationId = (await QuizAssociationRepository.getQuizAssociationId(userId, quizId)).id;
@@ -15,7 +15,7 @@ export default ({
 
     return {
       quizAssociation,
-      quiz: {...quiz, givenAnswers: quizAssociation.givenAnswers},
+      quiz: {...quiz, answeredQuestions: quizAssociation.answeredQuestions},
       startDate,
       endDate,
     };
@@ -25,7 +25,21 @@ export default ({
     create: QuizRepository.create,
     update: QuizRepository.update,
     delete: QuizRepository.delete,
-    assign: QuizAssociationRepository.assign,
+    assign: ({studentIds, quizId, professorId}) => {
+      const associations = [];
+      const versions = ['a', 'b', 'c'];
+
+      for (let i = 0; i < studentIds.length; i++) {
+        associations.push({
+          version: versions[(i + 1) % 3],
+          userId: studentIds[i],
+          peerId: studentIds[(i + 1) % studentIds.length],
+          quizId,
+        });
+      }
+
+      return QuizAssociationRepository.assign(quizId, professorId, associations);
+    },
     getAssignationMap: async quizId => {
       const allStudents = await UserRepository.getStudentsAssignedToQuiz(quizId);
 
@@ -33,7 +47,7 @@ export default ({
         .map(student => student.dataValues)
         .map(({assignedQuizzes: [assignedQuiz], ...student}) => ({
           ...student,
-          version: assignedQuiz ? assignedQuiz.dataValues.version : 0,
+          version: assignedQuiz ? assignedQuiz.dataValues.version : '',
         }));
     },
     get: async (userId, quizId, userType) => {
@@ -71,17 +85,10 @@ export default ({
         return 'This is not the time to submit this';
       }
 
-      await GivenAnswerRepository.bulkCreate(
+      await AnsweredQuestionRepository.bulkCreate(
         Object
           .entries(body)
-          .map(([questionId, answer]) => {
-            const commonAnswer = {questionId, points: 0, quizAssociationId: quizAssociation.id};
-
-            return typeof answer === 'string'
-              ? {...commonAnswer, answerId: null, statement: answer}
-              : answer.map(answerId => ({...commonAnswer, statement: '', answerId}));
-          })
-          .flat()
+          .map(([questionId, answer]) => ({questionId, quizAssociationId: quizAssociation.id, answer}))
       );
 
       return 'OK';

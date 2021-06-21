@@ -1,13 +1,24 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Route} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 
-import {useCorrectToken, useCorrectUserTypes} from 'customHooks/routes';
+const ProtectedRoute = ({types, ...rest}) => {
+  const userType = useSelector(state => state.auth.user.type);
+  const token = useSelector(state => state.auth.token);
 
-const CaregiverRoute = ({types, ...rest}) => {
-  useCorrectToken();
-  useCorrectUserTypes(types);
+  useEffect(() => {
+    if (!types.includes(userType)) {
+      window.location.href = '/signin';
+    }
+  }, [types, userType]);
+
+  useEffect(() => {
+    if (!token) {
+      window.location.href = '/signin';
+    }
+  }, [token]);
 
   return <Route {...rest} />;
 };
 
-export default CaregiverRoute;
+export default ProtectedRoute;

@@ -13,26 +13,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {isEmail: true},
       },
-      firstName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {len: [3, 70]},
-      },
-      lastName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {len: [3, 70]},
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {len: [6, 70]},
-      },
+      firstName: DataTypes.STRING,
+      lastName: DataTypes.STRING,
+      password: DataTypes.STRING,
       type: {
         type: DataTypes.STRING,
-        validate: {isIn: [['student', 'professor']]},
+        validate: {isIn: [['student', 'professor', 'admin']]},
       },
-      active: {type: DataTypes.BOOLEAN},
+      active: DataTypes.BOOLEAN,
     }, {
       timestamps: false,
       underscored: true,
@@ -40,9 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  User.associate = ({QuizAssociation, Quiz}) => {
+  User.associate = ({QuizAssociation}) => {
     User.hasMany(QuizAssociation, {foreignKey: 'userId', as: 'assignedQuizzes'});
-    User.belongsToMany(Quiz, {through: QuizAssociation, foreignKey: 'userId'});
   };
 
   User.beforeCreate(user => {

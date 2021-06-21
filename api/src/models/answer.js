@@ -7,15 +7,14 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-      statement: {type: DataTypes.STRING},
-      isCorrect: {type: DataTypes.BOOLEAN},
+      statement: DataTypes.STRING,
+      isCorrect: DataTypes.BOOLEAN,
     },
     {timestamps: false, underscored: true}
   );
 
-  Answer.associate = ({Question, GivenAnswer}) => {
+  Answer.associate = ({Question}) => {
     Answer.belongsTo(Question, {foreignKey: 'questionId'});
-    Answer.hasMany(GivenAnswer, {foreignKey: 'answerId', as: 'givenAnswers'});
   };
 
   return Answer;

@@ -16,13 +16,10 @@ module.exports = {
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
         },
-        statement: {type: Sequelize.STRING},
-        type: {type: Sequelize.STRING},
-        availablePoints: {
-          type: Sequelize.INTEGER,
-          field: 'available_points',
-        },
-        version: {type: Sequelize.INTEGER},
+        statement: Sequelize.STRING,
+        type: Sequelize.STRING,
+        availablePoints: {type: Sequelize.INTEGER, field: 'available_points'},
+        version: Sequelize.STRING,
       },
     );
   },

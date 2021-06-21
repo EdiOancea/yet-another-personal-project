@@ -4,13 +4,14 @@ import {
   TableCell,
   Checkbox,
   IconButton,
-  CircularProgress,
 } from '@material-ui/core';
-import {Delete as DeleteIcon, Edit as EditIcon} from '@material-ui/icons';
+import {Edit} from '@material-ui/icons';
+
+import {DeleteIconButton} from 'components';
 
 const getDeepKey = (obj, key) => key
   .split('.')
-  .reduce((acc, i) => (acc || {})[i], obj) || key;
+  .reduce((acc, i) => (acc || {})[i], obj) || '-';
 
 const CrudTableRow = ({
   entity,
@@ -45,20 +46,14 @@ const CrudTableRow = ({
       })}
       {onEdit && (
         <TableCell>
-          <IconButton onClick={() => onEdit(entity)} disabled={isDeleting}>
-            <EditIcon />
+          <IconButton color="primary" onClick={() => onEdit(entity)} disabled={isDeleting}>
+            <Edit />
           </IconButton>
         </TableCell>
       )}
       {onDelete && (
         <TableCell>
-          {isDeleting
-            ? <CircularProgress size={24} />
-            : (
-              <IconButton onClick={() => onDelete(entity)}>
-                <DeleteIcon />
-              </IconButton>
-            )}
+          <DeleteIconButton onClick={() => onDelete(entity)} isLoading={isDeleting} />
         </TableCell>
       )}
     </TableRow>

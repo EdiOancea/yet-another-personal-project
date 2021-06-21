@@ -7,17 +7,21 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-      userId: {type: DataTypes.UUID},
-      quizId: {type: DataTypes.UUID},
-      version: {type: DataTypes.INTEGER},
+      userId: DataTypes.UUID,
+      quizId: DataTypes.UUID,
+      peerId: DataTypes.UUID,
+      version: {type: DataTypes.STRING, defaultValue: ''},
+      finalGrade: {type: DataTypes.INTEGER, defaultValue: 0},
+      comment: {type: DataTypes.STRING, defaultValue: ''},
     },
     {timestamps: false, underscored: true}
   );
 
-  QuizAssociation.associate = ({User, Quiz, GivenAnswer}) => {
+  QuizAssociation.associate = ({User, Quiz, AnsweredQuestion}) => {
     QuizAssociation.belongsTo(Quiz, {foreignKey: 'quizId', as: 'quiz'});
     QuizAssociation.belongsTo(User, {foreignKey: 'userId'});
-    QuizAssociation.hasMany(GivenAnswer, {foreignKey: 'quizAssociationId', as: 'givenAnswers'});
+    QuizAssociation.belongsTo(User, {foreignKey: 'peerId'});
+    QuizAssociation.hasMany(AnsweredQuestion, {foreignKey: 'quizAssociationId', as: 'answeredQuestions'});
   };
 
   return QuizAssociation;

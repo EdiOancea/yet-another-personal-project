@@ -7,18 +7,18 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-      statement: {type: DataTypes.STRING},
-      type: {type: DataTypes.STRING},
-      availablePoints: {type: DataTypes.INTEGER},
-      version: {type: DataTypes.INTEGER},
+      statement: DataTypes.STRING,
+      type: DataTypes.STRING,
+      availablePoints: DataTypes.INTEGER,
+      version: {type: DataTypes.STRING, defaultValue: ''},
     },
     {timestamps: false, underscored: true}
   );
 
-  Question.associate = ({Quiz, Answer, GivenAnswer}) => {
+  Question.associate = ({Quiz, Answer, AnsweredQuestion}) => {
     Question.belongsTo(Quiz, {foreignKey: 'quizId'});
     Question.Answers = Question.hasMany(Answer, {foreignKey: 'questionId', as: 'answers'});
-    Question.hasMany(GivenAnswer, {foreignKey: 'questionId', as: 'givenAnswers'});
+    Question.hasMany(AnsweredQuestion, {foreignKey: 'questionId', as: 'answeredQuestions'});
   };
 
   return Question;

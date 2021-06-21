@@ -9,9 +9,11 @@ module.exports = {
           defaultValue: Sequelize.UUIDV4,
           primaryKey: true,
         },
-        description: {type: Sequelize.STRING},
+        title: Sequelize.STRING,
+        description: Sequelize.STRING,
         startDate: {type: Sequelize.DATE, field: 'start_date'},
         endDate: {type: Sequelize.DATE, field: 'end_date'},
+        graded: Sequelize.BOOLEAN,
       }
     );
   },
