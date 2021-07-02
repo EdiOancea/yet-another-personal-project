@@ -1,13 +1,14 @@
 export default ({QuestionService}) => ({
   create: async (req, res) => {
     const {
-      body: {statement, type, answers, availablePoints, version},
+      body: {statement, explanation, type, answers, availablePoints, version},
       params: {quizId},
     } = req;
 
     res.json(
       await QuestionService.create({
         statement,
+        explanation,
         answers,
         type,
         availablePoints,
@@ -23,7 +24,7 @@ export default ({QuestionService}) => ({
   },
   update: async (req, res) => {
     const {
-      body: {statement, type, answers, availablePoints, version},
+      body: {statement, explanation, type, answers, availablePoints, version},
       params: {quizId, questionId},
     } = req;
 
@@ -32,6 +33,7 @@ export default ({QuestionService}) => ({
         id: questionId,
         quizId,
         statement,
+        explanation,
         type,
         availablePoints,
         version,

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useParams} from 'react-router';
 import {useMutation} from 'react-query';
 import {Formik, Form} from 'formik';
-import {Button} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 
 import api from 'utils/api';
+import {SubmitButton, Snackbar} from 'components';
 import EssayQuestion from './EssayQuestion';
 import SingleOptionQuestion from './SingleOptionQuestion';
 import MultipleOptionsQuestion from './MultipleOptionsQuestion';
@@ -18,15 +18,23 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const getInitialValues = questions => questions.reduce(
-  (res, {id, type, answers}) => ({
-    ...res,
-    [id]: type === 'essay'
-      ? ''
-      : type === 'multipleOptions'
-        ? answers.reduce((acc, answer) => ({...acc, [answer.id]: false}), {})
-        : answers[0].id,
-  }),
+const getInitialValues = (questions, answeredQuestions) => questions.reduce(
+  (res, {id, type, answers}) => {
+    const previousAnswer = answeredQuestions.find(answeredQuestion => answeredQuestion.questionId === id);
+    const initialAnswer = previousAnswer?.answer || '';
+
+    return {
+      ...res,
+      [id]: type === 'essay'
+        ? initialAnswer
+        : type === 'multipleOptions'
+          ? answers.reduce((acc, answer) => ({
+            ...acc,
+            [answer.id]: initialAnswer.split(',').includes(answer.id),
+          }), {})
+          : initialAnswer,
+    };
+  },
   {}
 );
 
@@ -39,24 +47,27 @@ const parseValues = (questions, values) => questions
         ? values[id]
         : Object
           .entries(values[id])
-          .filter(([_, value]) => value)
+          .filter(([, value]) => value)
           .map(([answerId]) => answerId)
           .join(','),
   }), {});
 
-const QuizForm = ({questions, isReadOnly}) => {
+const QuizForm = ({questions, answeredQuestions, isReadOnly}) => {
   const classes = useStyles();
   const {quizId} = useParams();
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const submitFormMutation = useMutation(
     values => api.post(`/quiz/${quizId}/submit`, parseValues(questions, values)),
+    {onSuccess: () => setSnackbarMessage('Quiz saved successfully')}
   );
 
   return (
     <Formik
-      initialValues={getInitialValues(questions)}
+      initialValues={getInitialValues(questions, answeredQuestions)}
       onSubmit={submitFormMutation.mutate}
     >
       <Form className={classes.form}>
+        <Snackbar message={snackbarMessage} close={() => setSnackbarMessage('')} />
         {questions.map(({type, ...rest}) => {
           switch (type) {
             case 'essay':
@@ -69,9 +80,9 @@ const QuizForm = ({questions, isReadOnly}) => {
               return null;
           }
         })}
-        <Button type="submit" variant="contained" color="primary">
-          Submit
-        </Button>
+        <SubmitButton isLoading={submitFormMutation.isLoading}>
+          Save
+        </SubmitButton>
       </Form>
     </Formik>
   );

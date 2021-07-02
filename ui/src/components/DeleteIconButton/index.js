@@ -3,9 +3,9 @@ import {IconButton, CircularProgress} from '@material-ui/core';
 import {Delete} from '@material-ui/icons';
 import {makeStyles} from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   root: {display: 'flex', alignItems: 'center'},
-  wrapper: {margin: theme.spacing(1), position: 'relative', width: 'fit-content'},
+  wrapper: {position: 'relative', width: 'fit-content'},
   buttonProgress: {
     position: 'absolute',
     top: '50%',
@@ -19,7 +19,7 @@ const SubmitButton = ({isLoading, onClick}) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.wrapper}>
+    <span className={classes.wrapper}>
       <IconButton
         color="primary"
         disabled={isLoading}
@@ -28,7 +28,7 @@ const SubmitButton = ({isLoading, onClick}) => {
         <Delete />
       </IconButton>
       {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
-    </div>
+    </span>
   );
 };
 

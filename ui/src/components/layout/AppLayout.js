@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {makeStyles} from '@material-ui/core/styles';
 import {
   AppBar,
@@ -25,12 +25,14 @@ const useStyles = makeStyles(theme => ({
     height: '100vh',
   },
   children: {padding: theme.spacing(3)},
+  childrenSmall: {width: 700, margin: 'auto'},
   loadingChildren: {height: 'calc(100% - 72px)'},
 }));
 
-const AppLayout = ({children, isLoading}) => {
+const AppLayout = ({children, isLoading, small}) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const loggedUser = useSelector(state => state.auth.user);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleMenu = event => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -38,29 +40,33 @@ const AppLayout = ({children, isLoading}) => {
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar className={classes.toolbar}>
-          <Typography variant="h6" noWrap>Application Title</Typography>
-          <IconButton onClick={handleMenu} color="inherit">
-            <AccountCircle />
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-            keepMounted
-            transformOrigin={{vertical: 'top', horizontal: 'right'}}
-            open={!!anchorEl}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={() => dispatch(logOut())}>Log Out</MenuItem>
-          </Menu>
-        </Toolbar>
+        {loggedUser.email && (
+          <Toolbar className={classes.toolbar}>
+            <Typography variant="h6" noWrap>
+              {`Welcome ${loggedUser.firstName} ${loggedUser.lastName}!`}
+            </Typography>
+            <IconButton onClick={handleMenu} color="inherit">
+              <AccountCircle />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+              keepMounted
+              transformOrigin={{vertical: 'top', horizontal: 'right'}}
+              open={!!anchorEl}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={() => dispatch(logOut())}>Log Out</MenuItem>
+            </Menu>
+          </Toolbar>
+        )}
       </AppBar>
       <main className={classes.content}>
         <Toolbar />
         <Paper
           elevation={6}
-          className={`${classes.children} ${isLoading ? classes.loadingChildren : ''}`}
+          className={`${classes.children} ${isLoading ? classes.loadingChildren : ''} ${small ? classes.childrenSmall : ''}`}
         >
           {isLoading ? <FullPageLoader /> : children}
         </Paper>

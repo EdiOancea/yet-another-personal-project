@@ -6,7 +6,7 @@ const QuizTiming = ({entity: {quiz: {startDate, endDate}}}) => {
   const end = new Date(endDate);
 
   if (isBefore(now, start)) {
-    return formatDistanceToNow(start);
+    return `Starts in ${formatDistanceToNow(start)}`;
   }
 
   if (isBefore(now, end)) {

@@ -2,9 +2,9 @@ import React from 'react';
 import {Button, CircularProgress} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   root: {display: 'flex', alignItems: 'center'},
-  wrapper: {margin: theme.spacing(1), position: 'relative', width: 'fit-content'},
+  wrapper: {position: 'relative', width: 'fit-content'},
   buttonProgress: {
     position: 'absolute',
     top: '50%',
@@ -18,7 +18,7 @@ const SubmitButton = ({isLoading, onClick, children}) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.wrapper}>
+    <span className={classes.wrapper}>
       <Button
         variant="contained"
         color="primary"
@@ -29,7 +29,7 @@ const SubmitButton = ({isLoading, onClick, children}) => {
         {children}
       </Button>
       {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
-    </div>
+    </span>
   );
 };
 

@@ -48,4 +48,28 @@ export default ({QuizService}) => ({
 
     res.json(await QuizService.submit(userId, quizId, body));
   },
+  peer: async (req, res) => {
+    const {loggedUser: {userId}, params: {quizId}} = req;
+
+    res.json(await QuizService.peer(userId, quizId));
+  },
+  peerReview: async (req, res) => {
+    const {
+      loggedUser: {userId},
+      params: {quizId},
+      body: {comments, grades},
+    } = req;
+
+    res.json(await QuizService.peerReview(userId, quizId, comments, grades));
+  },
+  getGrades: async (req, res) => {
+    const {params: {quizId}} = req;
+
+    res.json(await QuizService.getGrades(quizId));
+  },
+  getGrade: async (req, res) => {
+    const {params: {quizId, userId}} = req;
+
+    res.json(await QuizService.getGrade(quizId, userId));
+  },
 });

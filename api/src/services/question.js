@@ -10,9 +10,7 @@ export default ({QuestionRepository}) => ({
     const parsedAnswers = type === 'essay'
       ? []
       : answers.map(answer => ({...answer, questionId: id}));
-    const answerIdsToKeep = answers
-      .filter(answer => answer.id)
-      .map(answer => answer.id);
+    const answerIdsToKeep = parsedAnswers.map(answer => answer.id).filter(Boolean);
 
     return QuestionRepository.update({
       ...rest,

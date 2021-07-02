@@ -1,6 +1,7 @@
-import React, {useMemo} from 'react';
+import React, {useState, useMemo} from 'react';
 import {useQuery, useMutation} from 'react-query';
-import {useParams} from 'react-router';
+import {useHistory, useParams} from 'react-router';
+import {Button} from '@material-ui/core';
 
 import api from 'utils/api';
 import {
@@ -8,10 +9,13 @@ import {
   PageTitle,
   SubmitButton,
   AppLayout,
+  Snackbar,
 } from 'components';
 import {useTableSelection} from 'components/CrudTable/helpers';
 
 const AssignQuizPage = () => {
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const history = useHistory();
   const {quizId} = useParams();
   const quizQuery = useQuery(
     ['quiz', quizId],
@@ -30,11 +34,17 @@ const AssignQuizPage = () => {
   const selectionProps = useTableSelection(quizAssignationMapQuery.data, preselectedStudents);
   const assignStudentsMutation = useMutation(
     () => api.post(`/quiz/${quizId}/assign`, {studentIds: selectionProps.selected}),
-    {onSuccess: quizAssignationMapQuery.refetch}
+    {
+      onSuccess: () => {
+        setSnackbarMessage('Students assigned successfully');
+        quizAssignationMapQuery.refetch();
+      },
+    }
   );
 
   return (
     <AppLayout isLoading={quizAssignationMapQuery.isLoading || quizQuery.isLoading}>
+      <Snackbar message={snackbarMessage} close={() => setSnackbarMessage('')} />
       <PageTitle title={quizQuery.data?.title} />
       <CrudTable
         columns={[
@@ -52,6 +62,7 @@ const AssignQuizPage = () => {
       >
         Assign
       </SubmitButton>
+      <Button color="secondary" onClick={history.goBack}>Cancel</Button>
     </AppLayout>
   );
 };

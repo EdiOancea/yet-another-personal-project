@@ -34,7 +34,7 @@ export default ({
       );
       await Answer.bulkCreate(
         answers.map(answer => ({questionId: id, ...answer})),
-        {updateOnDuplicate: ['id'], transaction}
+        {updateOnDuplicate: ['isCorrect', 'statement'], transaction}
       );
 
       return 'OK';

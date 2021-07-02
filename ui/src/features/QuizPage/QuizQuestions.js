@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {useMutation, useQueryClient} from 'react-query';
 import {useHistory, useParams} from 'react-router';
 import {
@@ -6,26 +6,36 @@ import {
   AccordionDetails,
   AccordionSummary,
   FormGroup,
-  FormControlLabel,
-  Checkbox,
-  CircularProgress,
   IconButton,
+  Button,
+  Typography,
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import {
-  Edit as EditIcon,
-  Add as AddIcon,
-  Delete as DeleteIcon,
-} from '@material-ui/icons';
+import {Edit} from '@material-ui/icons';
 
+import {ReadOnlySelection, DeleteIconButton} from 'components';
 import api from 'utils/api';
 
 const useStyles = makeStyles(() => ({
-  wrapper: {display: 'flex', flexDirection: 'column', justifyContent: 'space-between'},
-  addButton: {width: 'fit-content'},
-  questions: {flexDirection: 'column'},
-  questionGroups: {flexDirection: 'column'},
-  header: {justifyContent: 'space-between'},
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    overflowY: 'scroll',
+  },
+  addButton: {width: 'fit-content', marginTop: 'auto'},
+  questions: {display: 'flex', flexDirection: 'column'},
+  versions: {display: 'flex'},
+  header: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerButtons: {display: 'flex'},
+  noQuestions: {
+    margin: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+  },
 }));
 
 const QuizQuestions = ({questions = [], isReadOnly}) => {
@@ -47,44 +57,83 @@ const QuizQuestions = ({questions = [], isReadOnly}) => {
 
     deleteQuestionMutation.mutate(id);
   };
+  const anyQuestions = !!questions.length;
 
   return (
     <div className={classes.wrapper}>
-      <div>
-        {questions.map(({id, type, statement, answers}) => (
-          <Accordion key={id}>
-            <AccordionSummary classes={{content: classes.header}}>
-              {statement}
-              {!isReadOnly && (
-                <span>
-                  <EditIcon onClick={e => goToQuestion(e, id)} />
-                  {deleteQuestionMutation.isLoading
-                    ? <CircularProgress size={24} />
-                    : <DeleteIcon onClick={e => deleteQuestion(e, id)} />}
-                </span>
-              )}
-            </AccordionSummary>
-            <AccordionDetails>
-              <FormGroup>
-                {answers.map(({id: answerId, statement: answer, isCorrect}) => (
-                  <FormControlLabel
-                    key={answerId}
-                    control={<Checkbox checked={isCorrect} disabled />}
-                    label={answer}
-                  />
-                ))}
-                {type === 'essay' && 'This question has no options to choose from'}
-              </FormGroup>
-            </AccordionDetails>
-          </Accordion>
-        ))}
-        {questions.length === 0 && 'This quiz has no questions.'}
-      </div>
-      {!isReadOnly && (
-        <IconButton onClick={goToQuestion} color="primary" className={classes.addButton}>
-          <AddIcon />
-        </IconButton>
-      )}
+      {anyQuestions
+        ? (
+          <Fragment>
+            <div>
+              {questions.map(({id, type, statement, answers, version, explanation}) => (
+                <Accordion key={id}>
+                  <AccordionSummary classes={{content: classes.header}}>
+                    <Typography>{statement}</Typography>
+                    {!isReadOnly && (
+                      <div className={classes.headerButtons}>
+                        <IconButton onClick={e => goToQuestion(e, id)} color="primary">
+                          <Edit />
+                        </IconButton>
+                        <DeleteIconButton
+                          isLoading={deleteQuestionMutation.isLoading}
+                          onClick={e => deleteQuestion(e, id)}
+                        />
+                      </div>
+                    )}
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <FormGroup>
+                      <div>
+                        <div className={classes.version}>
+                          <Typography>Versions</Typography>
+                          <ReadOnlySelection
+                            options={[
+                              {statement: 'A', id: 'a', isCorrect: version.includes('a')},
+                              {statement: 'B', id: 'b', isCorrect: version.includes('b')},
+                              {statement: 'C', id: 'c', isCorrect: version.includes('c')},
+                            ]}
+                            type="multipleOptions"
+                          />
+                        </div>
+                        <div className={classes.questions}>
+                          {type !== 'essay' && (
+                            <Fragment>
+                              <Typography>Answers</Typography>
+                              <ReadOnlySelection options={answers} type={type} />
+                            </Fragment>
+                          )}
+                          {explanation && (
+                            <Fragment>
+                              <Typography>Explanation</Typography>
+                              {explanation}
+                            </Fragment>
+                          )}
+                        </div>
+                      </div>
+                    </FormGroup>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+              {questions.length === 0 && 'This quiz has no questions.'}
+            </div>
+            {!isReadOnly && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={goToQuestion}
+                className={classes.addButton}
+              >
+                Add Question
+              </Button>
+            )}
+          </Fragment>
+        )
+        : (
+          <div className={classes.noQuestions}>
+            <Typography variant="h6">This Quiz has no questions</Typography>
+            <Button variant="contained" color="primary" onClick={goToQuestion}>Add Question</Button>
+          </div>
+        )}
     </div>
   );
 };

@@ -9,6 +9,7 @@ import {PageTitle, CrudTable, AppLayout} from 'components';
 
 import QuizStatus from './QuizStatus';
 import QuizTiming from './QuizTiming';
+import QuizAction from './QuizAction';
 const PAGE_SIZE = 5;
 
 const QuizzesPage = () => {
@@ -58,9 +59,11 @@ const QuizzesPage = () => {
       <CrudTable
         columns={[
           {header: 'Title', key: 'quiz.title'},
-          {header: 'Description', key: 'quiz.description'},
-          {header: 'Due in', Component: QuizTiming},
+          {header: '', Component: QuizTiming},
           {header: 'Status', Component: QuizStatus},
+          ...isProfessor
+            ? [{header: 'Action', Component: QuizAction}]
+            : [],
         ]}
         entities={entities}
         entityIdBeingDeleted={entityIdBeingDeleted}
@@ -74,8 +77,15 @@ const QuizzesPage = () => {
           onClick: () => history.push('/quiz'),
         }}
       />
-      {isProfessor && !!entities.length
-        && <Button onClick={() => history.push('/quiz')}>Create a Quiz</Button>}
+      {isProfessor && !!entities.length && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => history.push('/quiz')}
+        >
+          Create a Quiz
+        </Button>
+      )}
     </AppLayout>
   );
 };

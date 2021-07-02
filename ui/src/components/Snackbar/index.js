@@ -5,12 +5,12 @@ import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles(() => ({
   root: {width: '100%'},
-  snack: {top: 72, width: 600},
+  snack: {top: 72, width: 400},
   title: {textTransform: 'capitalize'},
-  alert: {width: 600, wordBreak: 'break-all'},
+  alert: {width: 400, wordBreak: 'break-all'},
 }));
 
-const Snackbar = ({severity, message, open, setOpen}) => {
+const Snackbar = ({severity, message, open = !!message, close}) => {
   const classes = useStyles();
 
   const handleClose = (event, reason) => {
@@ -18,7 +18,7 @@ const Snackbar = ({severity, message, open, setOpen}) => {
       return;
     }
 
-    setOpen(false);
+    close();
   };
 
   return (

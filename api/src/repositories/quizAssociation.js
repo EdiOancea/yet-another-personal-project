@@ -23,12 +23,7 @@ export default ({
           },
         ],
       },
-      {
-        model: AnsweredQuestion,
-        as: 'answeredQuestions',
-        where: {quizAssociationId},
-        required: false,
-      },
+      {model: AnsweredQuestion, as: 'answeredQuestions', required: false},
     ],
   }),
   getQuizAssociationId: (userId, quizId) => QuizAssociation.findOne({
@@ -36,6 +31,18 @@ export default ({
     include: [{model: Quiz, as: 'quiz', where: {id: quizId}, attributes: [], required: true}],
     attributes: ['id'],
     raw: true,
+  }),
+  getQuizAssociationByPeer: (quizId, peerId) => QuizAssociation.findOne({
+    where: {quizId, peerId},
+    include: {
+      model: AnsweredQuestion,
+      as: 'answeredQuestions',
+      include: {
+        model: Question,
+        as: 'question',
+        where: {type: 'essay'},
+      },
+    },
   }),
   getList: (userId, {page, pageSize}) => QuizAssociation.findAndCountAll({
     where: {userId},
@@ -53,5 +60,9 @@ export default ({
 
       return 'OK';
     }
+  ),
+  updateFinalGrade: (quizAssociationId, body) => QuizAssociation.update(
+    body,
+    {where: {id: quizAssociationId}, fields: ['finalGrade', 'comment']},
   ),
 });

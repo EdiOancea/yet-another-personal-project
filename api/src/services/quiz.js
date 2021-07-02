@@ -1,5 +1,30 @@
 import {isPast, isFuture, formatDistanceToNow} from 'date-fns';
 
+const computeScore = (question, answer) => {
+  const answers = question.answers.map(({dataValues}) => dataValues);
+  const correctAnswers = answers.filter(({isCorrect}) => isCorrect).map(({id}) => id);
+
+  switch (question.type) {
+    case 'essay': return 0;
+    case 'singleOption': {
+      const [singleOptionAnswer] = correctAnswers;
+
+      return singleOptionAnswer === answer ? question.availablePoints : 0;
+    }
+    case 'multipleOptions': {
+      const correctCount = correctAnswers.length;
+      const incorrectCount = answers.length - correctCount;
+      const actualCorrect = answer.split(',').filter(key => correctAnswers.includes(key)).length;
+      const actualIncorrect = answer.split(',').filter(key => !correctAnswers.includes(key)).length;
+      const correctRatio = actualCorrect / correctCount;
+      const incorrectRatio = actualIncorrect / incorrectCount;
+
+      return Math.max(0, Math.ceil(question.availablePoints * (correctRatio - incorrectRatio)));
+    }
+    default: return 0;
+  }
+};
+
 export default ({
   QuizRepository,
   QuizAssociationRepository,
@@ -15,7 +40,10 @@ export default ({
 
     return {
       quizAssociation,
-      quiz: {...quiz, answeredQuestions: quizAssociation.answeredQuestions},
+      quiz: {
+        ...quiz,
+        answeredQuestions: quizAssociation.answeredQuestions,
+      },
       startDate,
       endDate,
     };
@@ -59,10 +87,26 @@ export default ({
 
       const questions = quiz.questions
         .map(question => question.dataValues)
-        .filter(question => question.version === quizAssociation.version);
+        .filter(question => question.version.split(',').includes(quizAssociation.version));
 
       if (isPast(endDate)) {
-        return {...quiz, questions};
+        const response = {...quiz, questions};
+
+        if (questions.length === quiz.answeredQuestions.length) {
+          return response;
+        }
+
+        const answeredQuestions = await AnsweredQuestionRepository.bulkCreate(
+          questions
+            .filter(({id}) => !quiz.answeredQuestions.find(({questionId}) => questionId === id))
+            .map(({id}) => ({
+              questionId: id,
+              quizAssociationId: quizAssociation.id,
+              answer: '',
+            }))
+        );
+
+        return {...response, answeredQuestions};
       }
 
       return {
@@ -72,6 +116,7 @@ export default ({
           : questions
             .map(({answers, ...restQuestion}) => ({
               ...restQuestion,
+              explanation: isFuture(endDate) ? '' : restQuestion.explanation,
               answers: answers
                 .map(({dataValues}) => dataValues)
                 .map(({isCorrect, ...restAnswer}) => restAnswer),
@@ -79,19 +124,57 @@ export default ({
       };
     },
     submit: async (userId, quizId, body) => {
-      const {quizAssociation, quiz, startDate, endDate} = await getParsedQuizAssociation(userId, quizId);
+      const {
+        quizAssociation,
+        quiz: {questions},
+        startDate,
+        endDate,
+      } = await getParsedQuizAssociation(userId, quizId);
 
       if (isFuture(startDate) || isPast(endDate)) {
         return 'This is not the time to submit this';
       }
 
-      await AnsweredQuestionRepository.bulkCreate(
+      await AnsweredQuestionRepository.bulkUpsert(
         Object
           .entries(body)
-          .map(([questionId, answer]) => ({questionId, quizAssociationId: quizAssociation.id, answer}))
+          .map(([questionId, answer]) => ({
+            questionId,
+            quizAssociationId: quizAssociation.id,
+            answer,
+            points: computeScore(questions.find(({id}) => id === questionId).dataValues, answer),
+          }))
       );
 
       return 'OK';
+    },
+    peer: async (userId, quizId) => {
+      const queryResult = await QuizAssociationRepository.getQuizAssociationByPeer(quizId, userId);
+
+      return queryResult.dataValues.answeredQuestions.map(({
+        answer,
+        question,
+        id,
+        peerComment,
+        peerPoints,
+      }) => {
+        const {statement, id: questionId, availablePoints} = question.dataValues;
+
+        return {answer, statement, availablePoints, questionId, id, peerComment, peerPoints};
+      });
+    },
+    peerReview: (userId, quizId, comments, grades) => {
+      const updates = Object
+        .keys(comments)
+        .map(id => ({id, peerPoints: grades[id], peerComment: comments[id]}));
+
+      return AnsweredQuestionRepository.peerReview(updates);
+    },
+    getGrades: QuizRepository.getQuizWithAssociatedStudents,
+    getGrade: async (quizId, userId) => {
+      const oof = await getParsedQuizAssociation(userId, quizId);
+
+      return oof;
     },
   };
 };

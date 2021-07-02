@@ -14,6 +14,7 @@ import QuizzesPage from 'features/QuizzesPage';
 import QuizPage from 'features/QuizPage';
 import QuizQuestionPage from 'features/QuizQuestionPage';
 import AssignQuizPage from 'features/AssignQuizPage';
+import QuizGradesPage from 'features/QuizGradesPage';
 import GradeQuizPage from 'features/GradeQuizPage';
 import TakeQuizPage from 'features/TakeQuizPage';
 
@@ -54,8 +55,11 @@ const App = () => {
         <ProtectedRoute path="/quiz/:quizId/assign" types={['professor']}>
           <AssignQuizPage />
         </ProtectedRoute>
-        <ProtectedRoute path="/quiz/:quizId/grade" types={['professor']}>
+        <ProtectedRoute path="/quiz/:quizId/grade/:userId" types={['professor']}>
           <GradeQuizPage />
+        </ProtectedRoute>
+        <ProtectedRoute path="/quiz/:quizId/grade" types={['professor']}>
+          <QuizGradesPage />
         </ProtectedRoute>
         <ProtectedRoute path="/quiz/:quizId?/take" types={['student']}>
           <TakeQuizPage />

@@ -11,7 +11,7 @@ import {DeleteIconButton} from 'components';
 
 const getDeepKey = (obj, key) => key
   .split('.')
-  .reduce((acc, i) => (acc || {})[i], obj) || '-';
+  .reduce((acc, i) => (acc || {})[i], obj);
 
 const CrudTableRow = ({
   entity,

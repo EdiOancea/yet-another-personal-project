@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {useState} from 'react';
 import {useHistory, useParams} from 'react-router';
 import {useMutation, useQuery} from 'react-query';
 import {Button, Paper} from '@material-ui/core';
@@ -14,6 +14,7 @@ import {
   DateTimeField,
   SubmitButton,
   AppLayout,
+  Snackbar,
 } from 'components';
 import QuizQuestions from './QuizQuestions';
 
@@ -47,6 +48,7 @@ const QuizPage = () => {
   const classes = useStyles();
   const history = useHistory();
   const {quizId} = useParams();
+  const [snackbarMessage, setSnackbarMessage] = useState(null);
   const quizQuery = useQuery(
     ['quiz', quizId],
     () => api.get(`/quiz/${quizId}`),
@@ -54,15 +56,16 @@ const QuizPage = () => {
   );
   const updateQuizMutation = useMutation(
     quiz => api.put(`/quiz/${quizId}`, quiz),
-    {onSuccess: history.goBack}
+    {
+      onSuccess: () => setSnackbarMessage('Quiz is successfully updated!'),
+      onError: setSnackbarMessage,
+    }
   );
   const createQuizMutation = useMutation(
     quiz => api.post('/quiz', quiz),
     {onSuccess: ({id}) => history.push(`/quiz/${id}`)}
   );
   const onSubmit = quizId ? updateQuizMutation.mutate : createQuizMutation.mutate;
-  const goToAssign = () => history.push(`/quiz/${quizId}/assign`);
-  const goToGrade = () => history.push(`/quiz/${quizId}/grade`);
   // const isReadOnly = isPast(new Date(quizQuery?.data?.startDate));
   const isReadOnly = false;
   const title = !quizId
@@ -70,9 +73,10 @@ const QuizPage = () => {
     : isReadOnly
       ? 'View Quiz'
       : 'Update Quiz';
-  console.log(quizQuery.isLoading);
+
   return (
     <AppLayout isLoading={quizQuery.isLoading}>
+      <Snackbar message={snackbarMessage} close={() => setSnackbarMessage('')} />
       <PageTitle title={title} />
       <div className={classes.wrapper}>
         <Paper elevation={3} className={classes.paper}>
@@ -92,18 +96,10 @@ const QuizPage = () => {
               />
               <DateTimeField name="startDate" label="Start Date" disabled={isReadOnly} />
               <DateTimeField name="endDate" label="End Date" disabled={isReadOnly} />
-              {!quizId && <SubmitButton isLoading={createQuizMutation.isLoading}>Create</SubmitButton>}
-              {quizId && !isReadOnly && (
-                <Fragment>
-                  <SubmitButton isLoading={updateQuizMutation.isLoading}>Save</SubmitButton>
-                  <Button type="secondary" onClick={goToAssign}>
-                    Assign
-                  </Button>
-                  <Button type="secondary" onClick={goToGrade}>
-                    Grade
-                  </Button>
-                </Fragment>
-              )}
+              <SubmitButton isLoading={createQuizMutation.isLoading || updateQuizMutation.isLoading}>
+                {quizId ? 'Save' : 'Create'}
+              </SubmitButton>
+              <Button type="secondary" onClick={history.goBack}>Cancel</Button>
             </Form>
           </Formik>
         </Paper>

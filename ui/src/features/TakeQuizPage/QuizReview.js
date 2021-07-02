@@ -1,93 +1,69 @@
-import React, {Fragment} from 'react';
-import {
-  FormControl,
-  FormControlLabel,
-  Radio,
-  Checkbox,
-  Chip,
-  Typography,
-} from '@material-ui/core';
+import React from 'react';
+import {useHistory} from 'react-router';
+import {FormControl, Chip, Typography, Grid, Button} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
+
+import {ReadOnlySelection} from 'components';
 
 const useStyles = makeStyles(() => ({
   question: {padding: '20px 0'},
-  wrapper: {display: 'flex', justifyContent: 'space-between'},
-  column: {display: 'flex', flexDirection: 'column', flexGrow: 1},
-  disabled: {'&$disabled': {color: 'unset'}},
-  big: {flexGrow: 2},
+  column: {display: 'flex', flexDirection: 'column', padding: '0 20px'},
 }));
 
-const QuizReview = ({quiz}) => {
+const QuizReview = ({quiz: {questions, answeredQuestions}}) => {
+  const history = useHistory();
   const classes = useStyles();
-  const disabledClasses = {disabled: classes.disabled};
 
   return (
-    <Fragment>
-      {quiz.questions.map(question => {
-        const answeredQuestion = quiz.answeredQuestions.find(({questionId}) => questionId === question.id);
-        const ControlComponent = question.type === 'singleOption' ? Radio : Checkbox;
+    <div>
+      {questions.map(({answers, id, type, statement, explanation, availablePoints}) => {
+        const answeredQuestion = answeredQuestions.find(({questionId}) => questionId === id);
+        const derivedAnswers = answers.map(answer => ({
+          ...answer,
+          isCorrect: answeredQuestion.answer.split(',').includes(answer.id),
+        }));
 
         return (
-          <Fragment key={question.id}>
+          <div key={id}>
             <FormControl fullWidth className={classes.question}>
-              <Typography variant="h6">{question.statement}</Typography>
-              <div className={classes.wrapper}>
-                {question.type === 'essay'
-                  ? (
-                    <Fragment>
-                      <div className={`${classes.column} ${classes.big}`}>
-                        <Typography variant="h6">Your Answer</Typography>
-                        <Typography>{answeredQuestion.answer}</Typography>
-                      </div>
-                      <div className={classes.column}>
-                        <Typography variant="h6">Professors Comments</Typography>
-                        <Typography>{answeredQuestion.comment || 'This question has no comments regarding the score.'}</Typography>
-                      </div>
-                    </Fragment>
-                  )
-                  : (
-                    <Fragment>
-                      <div className={classes.column}>
-                        <Typography variant="h6">Your Answer</Typography>
-                        {question.answers.map(answer => (
-                          <FormControlLabel
-                            key={answer.id}
-                            checked={answeredQuestion.answer.split(',').includes(answer.id)}
-                            disabled
-                            classes={disabledClasses}
-                            control={<ControlComponent classes={disabledClasses} />}
-                            label={answer.statement}
-                          />
-                        ))}
-                      </div>
-                      <div className={classes.column}>
-                        <Typography variant="h6">The Correct Answer</Typography>
-                        {question.answers.map(answer => (
-                          <FormControlLabel
-                            key={answer.id}
-                            checked={answer.isCorrect}
-                            disabled
-                            classes={disabledClasses}
-                            control={<ControlComponent classes={disabledClasses} />}
-                            label={answer.statement}
-                          />
-                        ))}
-                      </div>
-                      <div className={classes.column}>
-                        <Typography variant="h6">Comments</Typography>
-                        <Typography>
-                          {question.answerComments || 'This question has no comments regarding the score.'}
-                        </Typography>
-                      </div>
-                    </Fragment>
+              <Typography variant="h6">{statement}</Typography>
+              <Grid container>
+                <Grid xs={type === 'essay' ? 8 : 4} className={`${classes.column}`}>
+                  <Typography variant="h6">Your Answer</Typography>
+                  {type !== 'essay' && <ReadOnlySelection options={derivedAnswers} type={type} />}
+                  {type === 'essay' && (
+                    <div>
+                      <Typography>{answeredQuestion.answer || 'No answer given'}</Typography>
+                      <Typography variant="h6">Here is what your peer thinks about your comment</Typography>
+                      <Typography>{answeredQuestion.peerComment}</Typography>
+                      <Chip
+                        color="secondary"
+                        label={`${answeredQuestion.peerPoints} out of ${availablePoints} points as reviewed by one of your peers`}
+                      />
+                    </div>
                   )}
-              </div>
+                </Grid>
+                {type !== 'essay' && (
+                  <Grid xs={4} className={classes.column}>
+                    <Typography variant="h6">Correct Answers</Typography>
+                    <ReadOnlySelection options={answers} type={type} />
+                  </Grid>
+                )}
+                <Grid xs={4} className={classes.column}>
+                  <Typography variant="h6">Explanation</Typography>
+                  <Typography>{explanation}</Typography>
+                </Grid>
+              </Grid>
             </FormControl>
-            <Chip color="primary" label={`${answeredQuestion.points} out of ${question.availablePoints} points`} />
-          </Fragment>
+            <Chip
+              color="primary"
+              label={`${answeredQuestion.points} out of ${availablePoints} points`}
+            />
+          </div>
         );
       })}
-    </Fragment>
+      <Button onClick={history.goBack}>Go Back</Button>
+    </div>
   );
 };
 

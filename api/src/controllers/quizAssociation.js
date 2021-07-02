@@ -9,4 +9,12 @@ export default ({QuizAssociationService}) => ({
 
     res.json(await QuizAssociationService.getList(userId, query));
   },
+  grade: async (req, res) => {
+    const {
+      params: {quizAssociationId},
+      body,
+    } = req;
+
+    res.json(await QuizAssociationService.grade(quizAssociationId, body));
+  },
 });

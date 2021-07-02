@@ -1,13 +1,13 @@
 import React from 'react';
+import {useHistory} from 'react-router';
 import {useMutation} from 'react-query';
 import {useDispatch} from 'react-redux';
 import {
   Avatar,
-  Link,
   Paper,
-  Grid,
   Container,
   Typography,
+  Button,
 } from '@material-ui/core';
 import {LockOutlined} from '@material-ui/icons';
 import {makeStyles} from '@material-ui/core/styles';
@@ -35,17 +35,10 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
   },
   avatar: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(3),
     backgroundColor: theme.palette.secondary.main,
   },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  loader: {margin: theme.spacing(3, 'auto', 2)},
-  submit: {margin: theme.spacing(3, 0, 2)},
+  buttons: {display: 'flex', justifyContent: 'space-between'},
 }));
 
 const signInSchema = Yup.object().shape({
@@ -56,6 +49,7 @@ const signInSchema = Yup.object().shape({
 const initialValues = {email: '', password: ''};
 
 const SignInPage = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const classes = useStyles();
   const signInMutation = useMutation(
@@ -77,22 +71,20 @@ const SignInPage = () => {
           validationSchema={signInSchema}
           onSubmit={signInMutation.mutate}
         >
-          <Form className={classes.form}>
+          <Form>
             <TextField name="email" label="Email Address" autoFocus />
             <TextField name="password" label="Password" type="password" />
-            <SubmitButton isLoading={signInMutation.isLoading}>Sign In</SubmitButton>
-            <Grid container>
-              <Grid item xs>
-                <Link href="forgotPassword" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="signup" variant="body2">
-                  {'Don\'t have an account? Sign Up'}
-                </Link>
-              </Grid>
-            </Grid>
+            <span className={classes.buttons}>
+              <SubmitButton isLoading={signInMutation.isLoading}>
+                Sign In
+              </SubmitButton>
+              <Button
+                color="secondary"
+                onClick={() => history.push('/signup')}
+              >
+                Sign Up
+              </Button>
+            </span>
           </Form>
         </Formik>
       </Paper>

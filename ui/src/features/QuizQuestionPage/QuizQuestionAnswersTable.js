@@ -1,5 +1,5 @@
-import React from 'react';
-import {Button, IconButton} from '@material-ui/core';
+import React, {Fragment} from 'react';
+import {Button, IconButton, FormHelperText} from '@material-ui/core';
 import {Delete as DeleteIcon} from '@material-ui/icons';
 import {makeStyles} from '@material-ui/core/styles';
 import {FieldArray, useFormikContext} from 'formik';
@@ -13,16 +13,19 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
   },
   checkbox: {height: 'fit-content'},
+  addButton: {marginTop: 'auto', width: 'fit-content'},
 }));
 
+const DEFAULT_QUESTION = {isCorrect: false, statement: ''};
+
 const QuizQuestionAnswersTable = ({name}) => {
-  const {values: {answers}} = useFormikContext();
+  const {values: {answers}, errors} = useFormikContext();
   const classes = useStyles();
 
   return (
     <FieldArray name={name}>
       {arrayHelpers => (
-        <div className={classes.wrapper}>
+        <Fragment>
           {answers.map((_, idx) => {
             const checkboxName = `${name}.${idx}.isCorrect`;
             const textFieldName = `${name}.${idx}.statement`;
@@ -38,10 +41,20 @@ const QuizQuestionAnswersTable = ({name}) => {
               </div>
             );
           })}
-          <Button onClick={() => arrayHelpers.push({isCorrect: false, statement: ''})}>
-            Add
+          {typeof errors.answers === 'string' && (
+            <FormHelperText padding={10}>
+              {errors.answers}
+            </FormHelperText>
+          )}
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.addButton}
+            onClick={() => arrayHelpers.push(DEFAULT_QUESTION)}
+          >
+            Add Option
           </Button>
-        </div>
+        </Fragment>
       )}
     </FieldArray>
   );
