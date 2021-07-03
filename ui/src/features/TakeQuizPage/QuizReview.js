@@ -7,7 +7,7 @@ import {ReadOnlySelection} from 'components';
 
 const useStyles = makeStyles(() => ({
   question: {padding: '20px 0'},
-  column: {display: 'flex', flexDirection: 'column', padding: '0 20px'},
+  column: {display: 'flex', flexDirection: 'column'},
 }));
 
 const QuizReview = ({quiz: {questions, answeredQuestions}}) => {
@@ -34,8 +34,10 @@ const QuizReview = ({quiz: {questions, answeredQuestions}}) => {
                   {type === 'essay' && (
                     <div>
                       <Typography>{answeredQuestion.answer || 'No answer given'}</Typography>
-                      <Typography variant="h6">Here is what your peer thinks about your comment</Typography>
-                      <Typography>{answeredQuestion.peerComment}</Typography>
+                      <Typography variant="h6">Here is what your professor thinks about your answer</Typography>
+                      <Typography>{answeredQuestion.comment || 'No comment'}</Typography>
+                      <Typography variant="h6">Here is what your peer thinks about your answer</Typography>
+                      <Typography>{answeredQuestion.peerComment || 'No comment'}</Typography>
                       <Chip
                         color="secondary"
                         label={`${answeredQuestion.peerPoints} out of ${availablePoints} points as reviewed by one of your peers`}
@@ -51,7 +53,7 @@ const QuizReview = ({quiz: {questions, answeredQuestions}}) => {
                 )}
                 <Grid xs={4} className={classes.column}>
                   <Typography variant="h6">Explanation</Typography>
-                  <Typography>{explanation}</Typography>
+                  <Typography>{explanation || 'No explanation provided'}</Typography>
                 </Grid>
               </Grid>
             </FormControl>

@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const SubmitButton = ({isLoading, onClick, children}) => {
+const SubmitButton = ({isLoading, onClick, children, ...rest}) => {
   const classes = useStyles();
 
   return (
@@ -25,6 +25,7 @@ const SubmitButton = ({isLoading, onClick, children}) => {
         type="submit"
         disabled={isLoading}
         onClick={onClick}
+        {...rest}
       >
         {children}
       </Button>

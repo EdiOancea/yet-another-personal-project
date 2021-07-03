@@ -163,18 +163,14 @@ export default ({
         return {answer, statement, availablePoints, questionId, id, peerComment, peerPoints};
       });
     },
-    peerReview: (userId, quizId, comments, grades) => {
-      const updates = Object
+    peerReview: (userId, quizId, comments, grades) => AnsweredQuestionRepository.bulkUpdate(
+      Object
         .keys(comments)
-        .map(id => ({id, peerPoints: grades[id], peerComment: comments[id]}));
-
-      return AnsweredQuestionRepository.peerReview(updates);
-    },
+        .map(id => ({id, peerPoints: grades[id], peerComment: comments[id]})),
+      ['peerPoints', 'peerComment']
+    ),
     getGrades: QuizRepository.getQuizWithAssociatedStudents,
-    getGrade: async (quizId, userId) => {
-      const oof = await getParsedQuizAssociation(userId, quizId);
-
-      return oof;
-    },
+    getGrade: getParsedQuizAssociation,
+    markAsGraded: QuizRepository.markAsGraded,
   };
 };

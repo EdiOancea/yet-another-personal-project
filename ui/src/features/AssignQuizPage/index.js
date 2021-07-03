@@ -62,7 +62,7 @@ const AssignQuizPage = () => {
       >
         Assign
       </SubmitButton>
-      <Button color="secondary" onClick={history.goBack}>Cancel</Button>
+      <Button color="secondary" onClick={history.goBack}>Go Back</Button>
     </AppLayout>
   );
 };

@@ -63,7 +63,7 @@ const QuizPage = () => {
   );
   const createQuizMutation = useMutation(
     quiz => api.post('/quiz', quiz),
-    {onSuccess: ({id}) => history.push(`/quiz/${id}`)}
+    {onSuccess: ({id}) => history.replace(`/quiz/${id}`)}
   );
   const onSubmit = quizId ? updateQuizMutation.mutate : createQuizMutation.mutate;
   // const isReadOnly = isPast(new Date(quizQuery?.data?.startDate));
@@ -99,7 +99,7 @@ const QuizPage = () => {
               <SubmitButton isLoading={createQuizMutation.isLoading || updateQuizMutation.isLoading}>
                 {quizId ? 'Save' : 'Create'}
               </SubmitButton>
-              <Button type="secondary" onClick={history.goBack}>Cancel</Button>
+              <Button type="secondary" onClick={history.goBack}>Go Back</Button>
             </Form>
           </Formik>
         </Paper>

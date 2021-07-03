@@ -70,6 +70,11 @@ export default ({QuizService}) => ({
   getGrade: async (req, res) => {
     const {params: {quizId, userId}} = req;
 
-    res.json(await QuizService.getGrade(quizId, userId));
+    res.json(await QuizService.getGrade(userId, quizId));
+  },
+  markAsGraded: async (req, res) => {
+    const {params: {quizId}} = req;
+
+    res.json(await QuizService.markAsGraded(quizId));
   },
 });

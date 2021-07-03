@@ -67,7 +67,7 @@ const GradeQuizPage = () => {
   const {quizId, userId} = useParams();
   const history = useHistory();
   const quizQuery = useQuery(
-    ['quiz', quizId, 'grades', 'userId'],
+    ['quiz', quizId, 'grades', userId],
     () => api.get(`/quiz/${quizId}/grades/${userId}`)
   );
   const gradeMutation = useMutation(

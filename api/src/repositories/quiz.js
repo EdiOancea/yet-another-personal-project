@@ -25,4 +25,5 @@ export default ({
   ),
   update: body => Quiz.update(body, {where: {id: body.id}}),
   delete: id => Quiz.destroy({where: {id}}),
+  markAsGraded: id => Quiz.update({graded: true}, {where: {id}, fields: ['graded']}),
 });

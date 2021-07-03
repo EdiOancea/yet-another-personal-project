@@ -63,7 +63,7 @@ const QuizzesPage = () => {
           {header: 'Status', Component: QuizStatus},
           ...isProfessor
             ? [{header: 'Action', Component: QuizAction}]
-            : [],
+            : [{header: 'Final Grade', key: 'finalGrade'}],
         ]}
         entities={entities}
         entityIdBeingDeleted={entityIdBeingDeleted}

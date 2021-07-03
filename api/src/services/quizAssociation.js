@@ -3,10 +3,11 @@ export default ({QuizAssociationRepository, AnsweredQuestionRepository}) => ({
   getList: QuizAssociationRepository.getList,
   grade: (quizAssociationId, {finalGrade, comment, grades, comments}) => Promise.all([
     QuizAssociationRepository.updateFinalGrade(quizAssociationId, {finalGrade, comment}),
-    AnsweredQuestionRepository.gradeQuestion(
+    AnsweredQuestionRepository.bulkUpdate(
       Object
         .keys(comments)
-        .map(id => ({id, points: grades[id], comment: comments[id]}))
+        .map(id => ({id, points: grades[id], comment: comments[id]})),
+      ['points', 'comment']
     ),
   ]),
 });

@@ -20,6 +20,7 @@ export default ({
   professorOnly: [
     {route: '/api/quiz', method: 'post', callback: QuizController.create},
     {route: '/api/quiz/:quizId', method: 'put', callback: QuizController.update},
+    {route: '/api/quiz/:quizId/grade', method: 'post', callback: QuizController.markAsGraded},
     {route: '/api/quiz/:quizId', method: 'delete', callback: QuizController.delete},
     {route: '/api/quiz/:quizId/assign', method: 'post', callback: QuizController.assign},
     {route: '/api/quiz/:quizId/assign-map', method: 'get', callback: QuizController.getAssignationMap},

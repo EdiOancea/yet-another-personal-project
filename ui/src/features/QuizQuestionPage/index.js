@@ -172,7 +172,7 @@ const QuizQuestionPage = () => {
                 <RadioGroup name="type" label="Question Type" options={QUESTION_TYPE_OPTIONS} />
                 <span>
                   <SubmitButton isLoading={isMutationRunning}>{submitLabel}</SubmitButton>
-                  <Button onClick={history.goBack}>Cancel</Button>
+                  <Button onClick={history.goBack}>Go Back</Button>
                 </span>
               </Paper>
               {type !== 'essay' && (
