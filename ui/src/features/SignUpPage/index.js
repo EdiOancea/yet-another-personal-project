@@ -35,16 +35,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const validationSchema = yup.object().shape({
-  firstName: yup.string().required('This field is required'),
-  lastName: yup.string().required('This field is required'),
+  firstName: yup.string().required('Required'),
+  lastName: yup.string().required('Required'),
   email: yup
     .string()
     .email('Please enter a valid email')
-    .required('This field is required'),
-  password: yup.string().required('This field is required'),
+    .required('Required'),
+  password: yup.string().required('Required'),
   confirmPassword: yup
     .string()
-    .required('This field is required')
+    .required('Required')
     .oneOf(
       [yup.ref('password')],
       'Please confirm your password'

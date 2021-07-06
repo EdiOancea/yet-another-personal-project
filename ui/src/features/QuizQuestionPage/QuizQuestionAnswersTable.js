@@ -1,10 +1,9 @@
 import React, {Fragment} from 'react';
-import {Button, IconButton, FormHelperText} from '@material-ui/core';
-import {Delete as DeleteIcon} from '@material-ui/icons';
+import {Button, FormHelperText} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import {FieldArray, useFormikContext} from 'formik';
 
-import {TextField, Checkbox} from 'components';
+import {TextField, Checkbox, DeleteIconButton} from 'components';
 
 const useStyles = makeStyles(() => ({
   row: {
@@ -35,9 +34,7 @@ const QuizQuestionAnswersTable = ({name}) => {
               <div key={idx} className={classes.row}>
                 <Checkbox name={checkboxName} classes={{root: classes.checkbox}} />
                 <TextField name={textFieldName} label="Question option" variant="standard" />
-                <IconButton onClick={onDelete} >
-                  <DeleteIcon />
-                </IconButton>
+                <DeleteIconButton onClick={onDelete} />
               </div>
             );
           })}

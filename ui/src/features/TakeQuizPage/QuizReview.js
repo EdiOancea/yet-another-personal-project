@@ -1,21 +1,28 @@
 import React from 'react';
 import {useHistory} from 'react-router';
-import {FormControl, Chip, Typography, Grid, Button} from '@material-ui/core';
+import {FormControl, Chip, Typography, Grid, Button, Paper} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 
 import {ReadOnlySelection} from 'components';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   question: {padding: '20px 0'},
-  column: {display: 'flex', flexDirection: 'column'},
+  column: {display: 'flex', flexDirection: 'column', paddingRight: 20},
+  peerReview: {display: 'flex', justifyContent: 'space-between', backgroundColor: theme.palette.offwhite.main},
 }));
 
-const QuizReview = ({quiz: {questions, answeredQuestions}}) => {
+const QuizReview = ({quiz: {questions, answeredQuestions, finalGrade}}) => {
   const history = useHistory();
   const classes = useStyles();
 
   return (
     <div>
+      {finalGrade && (
+        <Typography variant="h6">
+          Final Grade:
+          {finalGrade}
+        </Typography>
+      )}
       {questions.map(({answers, id, type, statement, explanation, availablePoints}) => {
         const answeredQuestion = answeredQuestions.find(({questionId}) => questionId === id);
         const derivedAnswers = answers.map(answer => ({
@@ -26,7 +33,7 @@ const QuizReview = ({quiz: {questions, answeredQuestions}}) => {
         return (
           <div key={id}>
             <FormControl fullWidth className={classes.question}>
-              <Typography variant="h6">{statement}</Typography>
+              <Typography variant="h5">{statement}</Typography>
               <Grid container>
                 <Grid xs={type === 'essay' ? 8 : 4} className={`${classes.column}`}>
                   <Typography variant="h6">Your Answer</Typography>
@@ -36,12 +43,14 @@ const QuizReview = ({quiz: {questions, answeredQuestions}}) => {
                       <Typography>{answeredQuestion.answer || 'No answer given'}</Typography>
                       <Typography variant="h6">Here is what your professor thinks about your answer</Typography>
                       <Typography>{answeredQuestion.comment || 'No comment'}</Typography>
-                      <Typography variant="h6">Here is what your peer thinks about your answer</Typography>
+                      <Paper elevation={0} className={classes.peerReview}>
+                        <Typography variant="h6">Here is what your peer thinks about your answer</Typography>
+                        <Chip
+                          color="secondary"
+                          label={`${answeredQuestion.peerPoints} out of ${availablePoints} points`}
+                        />
+                      </Paper>
                       <Typography>{answeredQuestion.peerComment || 'No comment'}</Typography>
-                      <Chip
-                        color="secondary"
-                        label={`${answeredQuestion.peerPoints} out of ${availablePoints} points as reviewed by one of your peers`}
-                      />
                     </div>
                   )}
                 </Grid>

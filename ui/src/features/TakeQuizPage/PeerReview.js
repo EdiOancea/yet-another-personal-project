@@ -14,7 +14,8 @@ const getValidationSchema = data => yup.object().shape({
       ...acc,
       [id]: yup
         .number()
-        .integer()
+        .integer('Must be an integer')
+        .required('Required')
         .min(0, 'You can\'t give a negative grade')
         .max(availablePoints, `You can only grade this answer by up to ${availablePoints} points`),
     }), {})
@@ -51,16 +52,24 @@ const PeerReview = ({quiz}) => {
     >
       <Form>
         <Snackbar message={snackbarMessage} close={() => setSnackbarMessage('')} />
-        <Typography variant="h4">You can review your colleagues work now</Typography>
-        {peerQuizQuery.data.map(({id, statement, answer}) => (
+        <Typography variant="h5">
+          {peerQuizQuery.data.length
+            ? 'You can review your colleagues work now'
+            : 'There\'s nothing to review here'}
+        </Typography>
+        {peerQuizQuery.data.map(({id, statement, answer, availablePoints}) => (
           <Fragment key={id}>
             <Typography variant="h6">{statement}</Typography>
             <Typography>{answer}</Typography>
-            <TextField name={`grades.${id}`} label="Grade this question" type="number" fullWidth={false} />
+            <TextField name={`grades.${id}`} label={`Grade this question (out of ${availablePoints})`} type="number" fullWidth />
             <TextField name={`comments.${id}`} label="Explain your decision" multiline />
           </Fragment>
         ))}
-        <SubmitButton isLoading={peerReviewMutation.isLoading}>Save</SubmitButton>
+        {!!peerQuizQuery.data.length && (
+          <SubmitButton isLoading={peerReviewMutation.isLoading}>
+            Save
+          </SubmitButton>
+        )}
         <Button onClick={history.goBack}>Go Back</Button>
       </Form>
     </Formik>

@@ -63,7 +63,13 @@ const QuizzesPage = () => {
           {header: 'Status', Component: QuizStatus},
           ...isProfessor
             ? [{header: 'Action', Component: QuizAction}]
-            : [{header: 'Final Grade', key: 'finalGrade'}],
+            : [
+              {
+                header: 'Final Grade',
+                key: 'finalGrade',
+                render: ({quiz: {graded}, finalGrade}) => graded ? finalGrade : '-',
+              },
+            ],
         ]}
         entities={entities}
         entityIdBeingDeleted={entityIdBeingDeleted}

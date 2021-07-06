@@ -2,7 +2,7 @@ import React from 'react';
 import {FormControlLabel, Radio, Checkbox} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({disabled: {'&$disabled': {color: 'unset'}}}));
+const useStyles = makeStyles(theme => ({disabled: {'&$disabled': {color: theme.palette.gray.main}}}));
 
 const ReadOnlySelection = ({options, type}) => {
   const classes = useStyles();
@@ -21,8 +21,3 @@ const ReadOnlySelection = ({options, type}) => {
 };
 
 export default ReadOnlySelection;
-
-// Integrate with university DB, external user directory
-
-// Quiz Multiplication
-// Highlight wrong parts?

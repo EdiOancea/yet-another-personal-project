@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const SubmitButton = ({isLoading, onClick, children, ...rest}) => {
+const SubmitButton = ({isLoading, onClick, children, disabled, ...rest}) => {
   const classes = useStyles();
 
   return (
@@ -23,7 +23,7 @@ const SubmitButton = ({isLoading, onClick, children, ...rest}) => {
         variant="contained"
         color="primary"
         type="submit"
-        disabled={isLoading}
+        disabled={disabled || isLoading}
         onClick={onClick}
         {...rest}
       >

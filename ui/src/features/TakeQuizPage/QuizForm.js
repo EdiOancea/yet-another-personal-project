@@ -58,7 +58,7 @@ const QuizForm = ({questions, answeredQuestions, isReadOnly}) => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const submitFormMutation = useMutation(
     values => api.post(`/quiz/${quizId}/submit`, parseValues(questions, values)),
-    {onSuccess: () => setSnackbarMessage('Quiz saved successfully')}
+    {onSuccess: () => setSnackbarMessage('Quiz submitted successfully')}
   );
 
   return (

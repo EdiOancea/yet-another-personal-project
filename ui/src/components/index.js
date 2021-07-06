@@ -6,6 +6,7 @@ export {default as DeleteIconButton} from './DeleteIconButton';
 export {default as FullPageLoader} from './layout/FullPageLoader';
 export {default as AppLayout} from './layout/AppLayout';
 export {default as ReadOnlySelection} from './ReadOnlySelection';
+export {default as Timer} from './Timer';
 
 export {default as TextField} from './form/TextField';
 export {default as SelectField} from './form/SelectField';

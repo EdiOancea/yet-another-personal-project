@@ -4,7 +4,7 @@ import {useParams} from 'react-router';
 import {useQuery} from 'react-query';
 import {isFuture, isPast, add} from 'date-fns';
 
-import {PageTitle, AppLayout} from 'components';
+import {PageTitle, AppLayout, Timer} from 'components';
 import api from 'utils/api';
 import QuizForm from './QuizForm';
 import QuizTimer from './QuizTimer';
@@ -20,12 +20,22 @@ const TakeQuizPage = () => {
 
   const startDate = new Date(quizQuery.data?.startDate);
   const endDate = new Date(quizQuery.data?.endDate);
-  const endPeerReviewDate = endDate ? add(endDate, {minutes: 15}) : null;
+  const endPeerReviewDate = endDate ? add(endDate, {minutes: 5}) : null;
+  const referenceDate = isFuture(startDate)
+    ? startDate
+    : isFuture(endDate)
+      ? endDate
+      : isFuture(endPeerReviewDate)
+        ? endPeerReviewDate
+        : null;
 
   return (
     <AppLayout isLoading={quizQuery.isLoading} small={isFuture(endPeerReviewDate)}>
-      <PageTitle title={quizQuery.data?.title} />
-      <Typography variant="h5">{quizQuery.data?.description}</Typography>
+      <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <PageTitle title={quizQuery.data?.title} />
+        <Timer referenceDate={referenceDate} />
+      </div>
+      <Typography variant="h4">{quizQuery.data?.description}</Typography>
       {isFuture(startDate) && <QuizTimer startDate={startDate} />}
       {isPast(startDate) && isFuture(endDate) && (
         <QuizForm
@@ -33,11 +43,10 @@ const TakeQuizPage = () => {
           answeredQuestions={quizQuery.data?.answeredQuestions}
         />
       )}
-      {isPast(endDate)
-          && (isFuture(endPeerReviewDate)
-            ? <PeerReview quiz={quizQuery.data} />
-            : <QuizReview quiz={quizQuery.data} />
-          )}
+      {isPast(endDate) && isFuture(endPeerReviewDate)
+        && <PeerReview quiz={quizQuery.data} />}
+      {isPast(endPeerReviewDate)
+        && <QuizReview quiz={quizQuery.data} />}
     </AppLayout>
   );
 };

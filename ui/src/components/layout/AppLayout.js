@@ -40,27 +40,25 @@ const AppLayout = ({children, isLoading, small}) => {
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
-        {loggedUser.email && (
-          <Toolbar className={classes.toolbar}>
-            <Typography variant="h6" noWrap>
-              {`Welcome ${loggedUser.firstName} ${loggedUser.lastName}!`}
-            </Typography>
-            <IconButton onClick={handleMenu} color="inherit">
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-              keepMounted
-              transformOrigin={{vertical: 'top', horizontal: 'right'}}
-              open={!!anchorEl}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={() => dispatch(logOut())}>Log Out</MenuItem>
-            </Menu>
-          </Toolbar>
-        )}
+        <Toolbar className={classes.toolbar}>
+          <Typography variant="h6" noWrap>
+            {loggedUser.firstName && `Welcome ${loggedUser.firstName} ${loggedUser.lastName}!`}
+          </Typography>
+          <IconButton onClick={handleMenu} color="inherit">
+            <AccountCircle />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+            keepMounted
+            transformOrigin={{vertical: 'top', horizontal: 'right'}}
+            open={!!anchorEl}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={() => dispatch(logOut())}>Log Out</MenuItem>
+          </Menu>
+        </Toolbar>
       </AppBar>
       <main className={classes.content}>
         <Toolbar />

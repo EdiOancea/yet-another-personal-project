@@ -46,7 +46,7 @@ const CrudTableRow = ({
       })}
       {onEdit && (
         <TableCell>
-          <IconButton color="primary" onClick={() => onEdit(entity)} disabled={isDeleting}>
+          <IconButton color="secondary" onClick={() => onEdit(entity)} disabled={isDeleting}>
             <Edit />
           </IconButton>
         </TableCell>

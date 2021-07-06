@@ -90,7 +90,7 @@ export default ({
         .filter(question => question.version.split(',').includes(quizAssociation.version));
 
       if (isPast(endDate)) {
-        const response = {...quiz, questions};
+        const response = {...quiz, questions, finalGrade: quizAssociation.finalGrade};
 
         if (questions.length === quiz.answeredQuestions.length) {
           return response;
@@ -150,6 +150,9 @@ export default ({
     },
     peer: async (userId, quizId) => {
       const queryResult = await QuizAssociationRepository.getQuizAssociationByPeer(quizId, userId);
+      if (!queryResult) {
+        return [];
+      }
 
       return queryResult.dataValues.answeredQuestions.map(({
         answer,

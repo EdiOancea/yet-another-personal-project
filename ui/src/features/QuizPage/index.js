@@ -99,7 +99,7 @@ const QuizPage = () => {
               <SubmitButton isLoading={createQuizMutation.isLoading || updateQuizMutation.isLoading}>
                 {quizId ? 'Save' : 'Create'}
               </SubmitButton>
-              <Button type="secondary" onClick={history.goBack}>Go Back</Button>
+              <Button onClick={history.goBack}>Go Back</Button>
             </Form>
           </Formik>
         </Paper>

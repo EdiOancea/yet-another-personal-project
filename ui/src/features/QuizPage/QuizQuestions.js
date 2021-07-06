@@ -71,7 +71,7 @@ const QuizQuestions = ({questions = [], isReadOnly}) => {
                     <Typography>{statement}</Typography>
                     {!isReadOnly && (
                       <div className={classes.headerButtons}>
-                        <IconButton onClick={e => goToQuestion(e, id)} color="primary">
+                        <IconButton onClick={e => goToQuestion(e, id)} color="secondary">
                           <Edit />
                         </IconButton>
                         <DeleteIconButton

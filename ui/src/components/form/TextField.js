@@ -6,7 +6,8 @@ const TextField = ({
   name,
   autoComplete = name,
   variant = 'outlined',
-  margin = 'normal',
+  margin = 'dense',
+  size = 'small',
   fullWidth = true,
   ...rest
 }) => {
@@ -19,6 +20,7 @@ const TextField = ({
         ...rest,
         variant,
         margin,
+        size,
         fullWidth,
         autoComplete,
         error: touched && error !== ' ',

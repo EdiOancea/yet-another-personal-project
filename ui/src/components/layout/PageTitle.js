@@ -8,7 +8,7 @@ const PageTitle = ({title}) => {
   const classes = useStyles();
 
   return (
-    <Typography className={classes.title} variant="h4" component="h1">
+    <Typography className={classes.title} variant="h3" component="h1">
       {title}
     </Typography>
   );
